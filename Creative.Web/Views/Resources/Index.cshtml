@@ -1,0 +1,16 @@
+﻿@model Creative.Web.Views.Resources.IndexViewModel
+
+@{
+    ViewBag.Title = "Index";
+}
+<h2>Resources</h2>
+<div class="row">
+    <a href="@Url.Action("CreateSong")" class="btn btn-primary">Create song</a>
+</div>
+@foreach (var song in Model.Songs)
+{
+<div class="row">
+    <h3>@song.Title</h3>
+    @Html.ActionLink("edit", "EditSong", new { id = song.Id })
+</div>
+}

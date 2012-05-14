@@ -1,0 +1,215 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{38CE5C59-909E-4DA6-8E1D-7EEE7312CA9A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Highway.Identity.Core</RootNamespace>
+    <AssemblyName>Highway.Identity.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <CodeContractsAssemblyMode>1</CodeContractsAssemblyMode>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeContractsEnableRuntimeChecking>False</CodeContractsEnableRuntimeChecking>
+    <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
+    <CodeContractsRuntimeThrowOnFailure>True</CodeContractsRuntimeThrowOnFailure>
+    <CodeContractsRuntimeCallSiteRequires>False</CodeContractsRuntimeCallSiteRequires>
+    <CodeContractsRuntimeSkipQuantifiers>False</CodeContractsRuntimeSkipQuantifiers>
+    <CodeContractsRunCodeAnalysis>False</CodeContractsRunCodeAnalysis>
+    <CodeContractsNonNullObligations>False</CodeContractsNonNullObligations>
+    <CodeContractsBoundsObligations>False</CodeContractsBoundsObligations>
+    <CodeContractsArithmeticObligations>False</CodeContractsArithmeticObligations>
+    <CodeContractsEnumObligations>False</CodeContractsEnumObligations>
+    <CodeContractsRedundantAssumptions>False</CodeContractsRedundantAssumptions>
+    <CodeContractsRunInBackground>True</CodeContractsRunInBackground>
+    <CodeContractsShowSquigglies>False</CodeContractsShowSquigglies>
+    <CodeContractsUseBaseLine>False</CodeContractsUseBaseLine>
+    <CodeContractsEmitXMLDocs>False</CodeContractsEmitXMLDocs>
+    <CodeContractsCustomRewriterAssembly />
+    <CodeContractsCustomRewriterClass />
+    <CodeContractsLibPaths />
+    <CodeContractsExtraRewriteOptions />
+    <CodeContractsExtraAnalysisOptions />
+    <CodeContractsBaseLineFile />
+    <CodeContractsCacheAnalysisResults>False</CodeContractsCacheAnalysisResults>
+    <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
+    <CodeContractsReferenceAssembly>%28none%29</CodeContractsReferenceAssembly>
+    <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AsyncCtpLibrary">
+      <HintPath>..\packages\RavenDB-Client.1.0.616\lib\net40\AsyncCtpLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="AutoMapper, Version=2.0.0.232, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\AutoMapper.2.0.0\lib\net40-client\AutoMapper.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.4.3.0\lib\net40\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\XAct.WIF.0.1\lib\net35\Microsoft.IdentityModel.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.4.0.5\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog">
+      <HintPath>..\packages\NLog.2.0.0.2000\lib\net40\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="Raven.Abstractions">
+      <HintPath>..\packages\RavenDB-Client.1.0.616\lib\net40\Raven.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Raven.Client.Debug">
+      <HintPath>..\packages\RavenDB-Client.1.0.616\lib\net40\Raven.Client.Debug.dll</HintPath>
+    </Reference>
+    <Reference Include="Raven.Client.Lightweight">
+      <HintPath>..\packages\RavenDB-Client.1.0.616\lib\net40\Raven.Client.Lightweight.dll</HintPath>
+    </Reference>
+    <Reference Include="Raven.Client.MvcIntegration">
+      <HintPath>..\packages\RavenDB-Client.1.0.616\lib\net40\Raven.Client.MvcIntegration.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.IdentityModel" />
+    <Reference Include="System.Runtime.Caching" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.Activation" />
+    <Reference Include="System.ServiceModel.Web" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Thinktecture.IdentityModel, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Thinktecture.IdentityModel.1.3.0.0\lib\Thinktecture.IdentityModel.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Constants.cs" />
+    <Compile Include="DateTimeEpochExtensions.cs" />
+    <Compile Include="Helper\X509Certificates.cs" />
+    <Compile Include="Models\CertificateModel.cs" />
+    <Compile Include="Models\ClientCertificateModel.cs" />
+    <Compile Include="Models\DelegationModel.cs" />
+    <Compile Include="Models\EndpointsConfigurationModel.cs" />
+    <Compile Include="Models\GlobalConfigurationModel.cs" />
+    <Compile Include="Endpoints.cs" />
+    <Compile Include="Helper\Cache.cs" />
+    <Compile Include="Models\LinkedAccountModel.cs" />
+    <Compile Include="Models\UserAccountModel.cs" />
+    <Compile Include="Repositories\EntityFramework\ClientCertificateRepository.cs" />
+    <Compile Include="Repositories\EntityFramework\ConfigurationRepository.cs" />
+    <Compile Include="Repositories\EntityFramework\DelegationRepository.cs" />
+    <Compile Include="Repositories\EntityFramework\EntityModel\CertificateEntity.cs" />
+    <Compile Include="Repositories\Raven\Documents\LinkedAccount.cs" />
+    <Compile Include="Repositories\Raven\Documents\UserAccount.cs" />
+    <Compile Include="Repositories\EntityFramework\EntityModel\ClientCertificateEntity.cs" />
+    <Compile Include="Repositories\EntityFramework\EntityModel\DelegationEntity.cs" />
+    <Compile Include="Repositories\EntityFramework\EntityModel\EndpointsConfigurationEntity.cs" />
+    <Compile Include="Repositories\EntityFramework\EntityModel\GlobalConfigurationEntity.cs" />
+    <Compile Include="Repositories\EntityFramework\EntityModel\RelyingPartyEntity.cs" />
+    <Compile Include="Repositories\EntityFramework\Extensions.cs" />
+    <Compile Include="Repositories\IClientCertificateRepository.cs" />
+    <Compile Include="Repositories\ICacheRepository.cs" />
+    <Compile Include="Repositories\IDelegationRepository.cs" />
+    <Compile Include="Repositories\EntityFramework\IdentityServerConfigurationContext.cs" />
+    <Compile Include="Repositories\MemoryCacheRepository.cs" />
+    <Compile Include="Repositories\NullCacheRepository.cs" />
+    <Compile Include="Repositories\EntityFramework\ProviderUserRepository.cs" />
+    <Compile Include="Repositories\EntityFramework\RelyingPartyRepository.cs" />
+    <Compile Include="Repositories\Raven\ClientCertificateRepository.cs" />
+    <Compile Include="Repositories\Raven\ConfigurationRepository.cs" />
+    <Compile Include="Repositories\Raven\DelegationRepository.cs" />
+    <Compile Include="Repositories\Raven\Documents\Certificate.cs" />
+    <Compile Include="Repositories\Raven\Documents\ClientCertificate.cs" />
+    <Compile Include="Repositories\Raven\Documents\Delegation.cs" />
+    <Compile Include="Repositories\Raven\Documents\EndpointsConfiguration.cs" />
+    <Compile Include="Repositories\Raven\Documents\GlobalConfiguration.cs" />
+    <Compile Include="Repositories\Raven\Documents\RelyingParty.cs" />
+    <Compile Include="Repositories\Raven\Extensions.cs" />
+    <Compile Include="Repositories\Raven\RelyingPartyRepository.cs" />
+    <Compile Include="Repositories\Raven\UserRepository.cs" />
+    <Compile Include="SWT\SimpleWebToken.cs" />
+    <Compile Include="SWT\SwtConstants.cs" />
+    <Compile Include="SWT\SwtSecurityKeyClause.cs" />
+    <Compile Include="SWT\SwtSecurityTokenHandler.cs" />
+    <Compile Include="SWT\SymmetricSigningCredentials.cs" />
+    <Compile Include="TokenService\GenericUserNameSecurityTokenHandler.cs" />
+    <Compile Include="TokenService\SignInSessionsManager.cs" />
+    <Compile Include="TokenService\ClientCertificateIssuerNameRegistry.cs" />
+    <Compile Include="TokenService\RepositoryX509SecurityTokenHandler.cs" />
+    <Compile Include="TokenService\RepositoryUserNameSecurityTokenHandler.cs" />
+    <Compile Include="TokenService\WSFederationMetadataGenerator.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\IConfigurationRepository.cs" />
+    <Compile Include="Repositories\IRelyingPartyRepository.cs" />
+    <Compile Include="Repositories\IUserRepository.cs" />
+    <Compile Include="Models\RelyingPartyModel.cs" />
+    <Compile Include="TokenService\Request.cs" />
+    <Compile Include="TokenService\RequestDetailsScope.cs" />
+    <Compile Include="TokenService\RequestDetails.cs" />
+    <Compile Include="TokenService\TokenService.cs" />
+    <Compile Include="TokenService\TokenServiceConfiguration.cs" />
+    <Compile Include="TokenService\TokenServiceHostFactory.cs" />
+    <Compile Include="TokenService\X509CertificateSessionSecurityTokenHandler.cs" />
+    <Compile Include="Tracing\Tracing.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Shared\Shared.csproj">
+      <Project>{AA3E0193-6B57-4E51-A609-37A6D85A5541}</Project>
+      <Name>Shared</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

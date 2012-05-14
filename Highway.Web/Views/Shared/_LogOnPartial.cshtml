@@ -1,0 +1,6 @@
+﻿@if(Request.IsAuthenticated) {
+    <a href="#">@Context.User.Identity.Name</a>
+}
+else {
+    @Html.ActionLink("Log On", "LogOn", "Account")
+}

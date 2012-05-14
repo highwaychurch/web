@@ -1,0 +1,54 @@
+﻿@model Creative.Web.Models.Song
+
+@{
+    ViewBag.Title = "EditSong";
+}
+
+<div class="well">
+    <div class="row">
+        <div class="span2">
+            <img src="http://placehold.it/180x180" alt="">
+        </div>
+        <div class="offset2">
+            @using (Html.BeginForm("EditSong", "Resources", FormMethod.Post, new { @class = "form-horizontal" }))
+            {
+                @Html.HiddenFor(x => x.Id)
+                @Html.ValidationSummary(true, "Bad boy")
+                <fieldset>
+                    <legend><h1>@Model.Title</h1></legend>
+                    <div class="control-group">
+                        @Html.LabelFor(x => x.Title, "Title")
+                        <div class="controls">
+                            @Html.TextBoxFor(x => x.Title)
+                            <span class="help-inline">@Html.ValidationMessageFor(x => x.Title)</span>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        @Html.LabelFor(x => x.Artist, "Artist")
+                        <div class="controls">
+                            @Html.TextBoxFor(x => x.Artist)
+                            <span class="help-inline">@Html.ValidationMessageFor(x => x.Artist)</span>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        @Html.LabelFor(x => x.Album, "Album")
+                        <div class="controls">
+                            @Html.TextBoxFor(x => x.Album)
+                            <span class="help-inline">@Html.ValidationMessageFor(x => x.Album)</span>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-success">
+                            <i class="icon-ok icon-white"></i>
+                            Save changes
+                        </button>
+                        <a href="@Url.Action("SongDetails", "Resources", new { id = Model.Id })" class="btn btn-danger">
+                            <i class="icon-arrow-left icon-white"></i>
+                            Cancel
+                        </a>
+                    </div>
+                </fieldset>
+            }
+        </div>
+    </div>
+</div>

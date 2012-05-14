@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Package" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- Import the community project for zipping -->
+  <PropertyGroup>
+    <MSBuildCommunityTasksPath>$(MSBuildThisFileDirectory)..\packages\MSBuildCommunityTasks</MSBuildCommunityTasksPath>
+	<PackageDropFolder></PackageDropFolder>
+	<BinaryDir></BinaryDir>
+  </PropertyGroup>
+
+  <Import Project="$(MSBuildThisFileDirectory)..\packages\MSBuildCommunityTasks\MSBuild.Community.Tasks.Targets" />
+  <!-- Define any command-line overrideable properties at the project level -->
+  <PropertyGroup>
+    <PackageWorkingRootPath>$(MSBuildProjectDirectory)\$(IntermediateOutputPath)Package</PackageWorkingRootPath>
+    <PackageLocation>$(PackageWorkingRootPath)\$(AssemblyName).$(Configuration).Package.zip</PackageLocation>
+    <FilesToPackagePath>$(PackageWorkingRootPath)\PackageTmp</FilesToPackagePath>
+  </PropertyGroup>
+  <Target Name="Package">
+    <PropertyGroup>
+      <BuiltFilesPath>$(OutputPath)</BuiltFilesPath>
+    </PropertyGroup>
+	<PropertyGroup Condition="$(BinaryDir) != '' ">
+		<BuiltFilesPath>$(MSBuildProjectDirectory)\bin\$(Configuration)\</BuiltFilesPath>
+	</PropertyGroup>
+	
+    <ItemGroup>
+      <BuiltFiles Include="$(BuiltFilesPath)**\*.*" />
+    </ItemGroup>
+    <Message Text="MsBuildProjectDirectory=$(MSBuildProjectDirectory)" />
+    <Message Text="BuiltFilesPath=$(BuiltFilesPath)" />
+    <Message Text="Intermediate Files=$(BuiltFiles)" />
+    <Message Text="Attempting to create package $(PackageWorkingRootPath)..." />
+    <!-- This is where we want to call the TransformAppConfig task and then zip up the resultant package -->
+    <!-- 1. Create a temp directory in the $(IntermediateOutputPath) (ensure it is clean) -->
+    <RemoveDir Directories="$(PackageWorkingRootPath)" Condition="exists('$(PackageWorkingRootPath)')" />
+    <MakeDir Directories="$(PackageWorkingRootPath)" />
+    <MakeDir Directories="$(FilesToPackagePath)" />
+    <!-- 2. Copy the whole tree from $(OutputPath) to $(IntermediateOutputPath)\Package -->
+    <Copy SourceFiles="@(BuiltFiles)" DestinationFiles="@(BuiltFiles->'$(FilesToPackagePath)\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <!-- 3. Transform all of the configuration files for the different environments -->
+    <MSBuild Projects="$(MSBuildThisFileDirectory)\ConfigTransform.targets" Properties="SourceDirectory=$(MSBuildProjectDirectory);DestDirectory=$(FilesToPackagePath)" />
+    <!-- 4. Package it all up into a zip file -->
+    <ItemGroup>
+      <ZipFiles Include="$(FilesToPackagePath)\**\*.*" Exclude="*.zip" />
+    </ItemGroup>
+    <Message Text="Attempting to package the following files below $(FilesToPackagePath) into $(PackageLocation) from the working directory $(FilesToPackagePath):" />
+    <Message Text="@(ZipFiles)" />
+    <Message Text="Going to use Package folder $(PackageLocation)" />
+    <!-- TODO: Find a better way to do this -->
+    <!-- Ugh this is a bit dodgy basically creates the directories ../Packages/<filename as a folder> -->
+    <!-- Then removes the filename as a folder part leaving the Packages folder to use -->
+    <Delete Files="$(PackageLocation)" Condition="exists('$(PackageLocation)')" />
+    <RemoveDir Directories="$(PackageLocation)" Condition="exists('$(PackageLocation)')" />
+    <MakeDir Directories="$(PackageLocation)" />
+    <RemoveDir Directories="$(PackageLocation)" Condition="exists('$(PackageLocation)')" />
+    <Zip Files="@(ZipFiles)" ZipFileName="$(PackageLocation)" WorkingDirectory="$(FilesToPackagePath)" />
+  </Target>
+  
+  
+  <Target Name="CopyPackages" DependsOnTargets="Package">
+	<Copy SourceFiles="$(PackageLocation)" DestinationFolder="$(PackageDropFolder)" />
+  </Target>
+  
+</Project>
