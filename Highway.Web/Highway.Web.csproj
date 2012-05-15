@@ -288,7 +288,7 @@
         <WebProjectProperties>
           <UseIIS>True</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>2265</DevelopmentServerPort>
+          <DevelopmentServerPort>9500</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>http://localhost:9500</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
