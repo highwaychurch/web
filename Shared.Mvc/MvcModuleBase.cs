@@ -6,7 +6,7 @@ using Highway.Shared.Mvc.TempData;
 
 namespace Highway.Shared.Mvc
 {
-    public class MvcModule : Module
+    public class MvcModuleBase : Module
     {
         protected override void Load(ContainerBuilder builder)
         {

@@ -1,0 +1,11 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+
+<h2>People that look like Michael</h2>
+<ul>
+@foreach (var person in Model.results.person)
+{
+    <li>@person.firstName @person.lastName has a name like Michael (Id = @person["@id"]) (Image Url = @person["@imageURI"])</li>
+}
+</ul>

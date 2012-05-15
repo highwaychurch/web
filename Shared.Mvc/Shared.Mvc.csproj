@@ -70,6 +70,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AutofacModuleExtensions.cs" />
     <Compile Include="ContractCookieExtensions.cs" />
     <Compile Include="TimeModule.cs" />
     <Compile Include="SecurityModule.cs" />
@@ -91,7 +92,7 @@
     <Compile Include="RequestExtensions.cs" />
     <Compile Include="Time\SessionClock.cs" />
     <Compile Include="FlashMessages\FlashMessageTempDataExtensions.cs" />
-    <Compile Include="MvcModule.cs" />
+    <Compile Include="MvcModuleBase.cs" />
     <Compile Include="Persistence\TransactedActionFilter.cs" />
     <Compile Include="UrlHelperExtensions.cs" />
     <Compile Include="Validation\BoolAttribute.cs" />

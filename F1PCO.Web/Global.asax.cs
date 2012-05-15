@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
@@ -8,11 +9,13 @@ using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Routing;
 using Autofac;
-using Autofac.Configuration;
 using Autofac.Integration.Mvc;
+using F1PCO.Web.App.Modules;
+using Highway.Shared.Autofac;
 using Highway.Shared.Diagnostics;
 using Highway.Shared.Mvc;
 using Highway.Shared.Mvc.Validation;
+using Module = Autofac.Module;
 
 namespace F1PCO.Web
 {
@@ -101,12 +104,18 @@ namespace F1PCO.Web
             if (IsDebug) Thread.Sleep(2000);  // Wait for RavenDB to start in debug
 
             // Build the container
+            var modules = new List<Module>
+                              {
+                                  new MvcModule(),
+                                  new PersistenceModule(),
+                                  new SecurityModule(),
+                                  new DiagnosticsModule(),
+                                  new TimeModule(),
+                                  new F1Module()
+                              };
+
             var builder = new ContainerBuilder();
-            builder.RegisterModule<App.Modules.MvcModule>();
-            builder.RegisterModule<App.Modules.PersistenceModule>();
-            builder.RegisterModule<SecurityModule>();
-            builder.RegisterModule<DiagnosticsModule>();
-            builder.RegisterModule<TimeModule>();
+            builder.RegisterModule(new ConfiguredModules(modules));
             _container = builder.Build();
             DependencyResolver.SetResolver(new AutofacDependencyResolver(_container));
             _log = _container.Resolve<ILog<MvcApplication>>();

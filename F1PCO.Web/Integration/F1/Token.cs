@@ -1,4 +1,4 @@
-namespace F1OAuthTest.Integration.FellowshipOne
+namespace F1PCO.Web.Integration.F1
 {
     public class Token
     {

@@ -5,7 +5,7 @@ using Highway.Shared.Persistence;
 
 namespace Highway.Shared.Mvc
 {
-    public class PersistenceModule : Module
+    public class PersistenceModuleBase : Module
     {
         protected override void Load(ContainerBuilder builder)
         {

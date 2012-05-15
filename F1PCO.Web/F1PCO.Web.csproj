@@ -176,18 +176,22 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App\Modules\F1Module.cs" />
     <Compile Include="App\Modules\MvcModule.cs" />
     <Compile Include="App\Modules\PersistenceModule.cs" />
     <Compile Include="Controllers\F1AuthController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\PersonController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Integration\FellowshipOne\ContractCookieExtensions.cs" />
-    <Compile Include="Integration\FellowshipOne\F1AuthorizationHelper.cs" />
-    <Compile Include="Integration\FellowshipOne\Token.cs" />
-    <Compile Include="Integration\FellowshipOne\URL.cs" />
-    <Compile Include="Integration\FellowshipOne\UrlHelperExtensions.cs" />
+    <Compile Include="Integration\F1\F1AuthorizationService.cs" />
+    <Compile Include="Integration\F1\F1ClientProvider.cs" />
+    <Compile Include="Integration\F1\F1PersonRepository.cs" />
+    <Compile Include="Integration\F1\IF1AuthorizationService.cs" />
+    <Compile Include="Integration\F1\IF1ClientProvider.cs" />
+    <Compile Include="Integration\F1\IF1PersonRepository.cs" />
+    <Compile Include="Integration\F1\Token.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -230,7 +234,9 @@
     <Content Include="js\plugins.js" />
     <Content Include="js\script.js" />
     <Content Include="robots.txt" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -306,6 +312,7 @@
     <Content Include="bootstrap\less\wells.less" />
     <None Include="bootstrap\LICENSE" />
     <Content Include="Views\Shared\_LogOnPartial.cshtml" />
+    <Content Include="Views\Person\Index.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

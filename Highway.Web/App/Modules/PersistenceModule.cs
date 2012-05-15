@@ -1,12 +1,13 @@
 ﻿using Autofac;
 using Autofac.Integration.Mvc;
+using Highway.Shared.Mvc;
 using Highway.Shared.Persistence;
 using Raven.Client;
 using Raven.Client.Document;
 
 namespace Highway.Web.App.Modules
 {
-    public class PersistenceModule : Shared.Mvc.PersistenceModule
+    public class PersistenceModule : PersistenceModuleBase
     {
         protected override void Load(ContainerBuilder builder)
         {

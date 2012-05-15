@@ -2,13 +2,14 @@
 using Autofac.Integration.Mvc;
 using Highway.Identity.Core.Repositories;
 using Highway.Identity.Core.Repositories.Raven;
+using Highway.Shared.Mvc;
 using Highway.Shared.Persistence;
 using Raven.Client;
 using Raven.Client.Document;
 
 namespace Highway.Identity.Web.App.Modules
 {
-    public class PersistenceModule : Shared.Mvc.PersistenceModule
+    public class PersistenceModule : PersistenceModuleBase
     {
         protected override void Load(ContainerBuilder builder)
         {
