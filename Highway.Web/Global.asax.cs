@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
@@ -87,9 +88,10 @@ namespace Highway.Web
 
         protected void Application_Start()
         {
+            if (IsDebug) Thread.Sleep(2000);  // Wait for RavenDB to start in debug
+
             // Build the container
             var builder = new ContainerBuilder();
-            builder.RegisterModule<ConfigurationSettingsReader>();
             builder.RegisterModule<App.Modules.MvcModule>();
             builder.RegisterModule<App.Modules.PersistenceModule>();
             builder.RegisterModule<SecurityModule>();

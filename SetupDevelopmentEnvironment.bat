@@ -70,6 +70,18 @@ IF %ERRORLEVEL% NEQ 0 GOTO ERROR
 %appcmd% set site /site.name:Creative.Web /+bindings.[protocol='https',bindingInformation='*:443:creative.%domain%']
 IF %ERRORLEVEL% NEQ 0 GOTO ERROR
 
+%appcmd% delete site /site.name:F1PCO.Web
+%appcmd% add site /site.name:F1PCO.Web
+IF %ERRORLEVEL% NEQ 0 GOTO ERROR
+%appcmd% add app /site.name:F1PCO.Web /path:"/" /physicalPath:"%~dp0F1PCO.Web"
+IF %ERRORLEVEL% NEQ 0 GOTO ERROR
+%appcmd% set site /site.name:F1PCO.Web /+bindings.[protocol='http',bindingInformation='*:9506:localhost']
+IF %ERRORLEVEL% NEQ 0 GOTO ERROR
+%appcmd% set site /site.name:F1PCO.Web /+bindings.[protocol='http',bindingInformation='*:80:f1pco.%domain%']
+IF %ERRORLEVEL% NEQ 0 GOTO ERROR
+%appcmd% set site /site.name:F1PCO.Web /+bindings.[protocol='https',bindingInformation='*:443:f1pco.%domain%']
+IF %ERRORLEVEL% NEQ 0 GOTO ERROR
+
 ECHO
 ECHO ################################
 ECHO Configuring HTTP.SYS
@@ -113,6 +125,16 @@ netsh http add urlacl url=http://creative.%domain%:80/ user=everyone
 IF %ERRORLEVEL% NEQ 0 GOTO ERROR
 netsh http delete urlacl url=https://creative.%domain%:443/
 netsh http add urlacl url=https://creative.%domain%:443/ user=everyone
+IF %ERRORLEVEL% NEQ 0 GOTO ERROR
+
+ECHO --------------------------------
+ECHO f1pco.%domain%
+ECHO --------------------------------
+netsh http delete urlacl url=http://f1pco.%domain%:80/
+netsh http add urlacl url=http://f1pco.%domain%:80/ user=everyone
+IF %ERRORLEVEL% NEQ 0 GOTO ERROR
+netsh http delete urlacl url=https://f1pco.%domain%:443/
+netsh http add urlacl url=https://f1pco.%domain%:443/ user=everyone
 IF %ERRORLEVEL% NEQ 0 GOTO ERROR
 
 ECHO --------------------------------

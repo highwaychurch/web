@@ -55,3 +55,5 @@ packages/
 #ncrunch
 *ncrunch*
 *crunch*.local.xml
+Raven.Web/Raven.Studio.xap
+Raven.Web/Data/*
