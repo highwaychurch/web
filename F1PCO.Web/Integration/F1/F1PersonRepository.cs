@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Net;
+using F1PCO.Web.Models;
 using Hammock;
 using Newtonsoft.Json.Linq;
 
@@ -14,7 +16,7 @@ namespace F1PCO.Web.Integration.F1
             _clientProvider = clientProvider;
         }
 
-        public dynamic GetPeople()
+        public IEnumerable<F1Person> GetPeople()
         {
             var request = new RestRequest
             {
@@ -30,11 +32,28 @@ namespace F1PCO.Web.Integration.F1
             {
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
-                    dynamic people = JObject.Parse(response.Content);
+                    var people = GetF1PeopleFromJson(response.Content);
                     return people;
                 }
 
                 throw new Exception("An error occured: Status code: " + response.StatusCode, response.InnerException);
+            }
+        }
+
+        private static IEnumerable<F1Person> GetF1PeopleFromJson(string json)
+        {
+            dynamic people = JObject.Parse(json);
+            foreach (var p in people.results.person)
+            {
+                var person = new F1Person
+                {
+                    F1ID = p["@id"],
+                    FirstName = p.firstName,
+                    LastName = p.lastName,
+                    Gender = p.gender,
+                    DateOfBirth = (DateTime?)p.dateOfBirth
+                };
+                yield return person;
             }
         }
     }

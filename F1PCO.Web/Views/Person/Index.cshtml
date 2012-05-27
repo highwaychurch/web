@@ -1,11 +1,33 @@
-﻿@{
+﻿@model F1PCO.Web.ViewModels.Person.IndexViewModel
+@{
     ViewBag.Title = "Index";
 }
 
 <h2>People that look like Michael</h2>
-<ul>
-@foreach (var person in Model.results.person)
-{
-    <li>@person.firstName @person.lastName has a name like Michael (Id = @person["@id"]) (Image Url = @person["@imageURI"])</li>
-}
-</ul>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>F1ID</th>
+            <th>First Name (new)</th>
+            <th>First Name (old)</th>
+            <th>Last Name (new)</th>
+            <th>Last Name (old)</th>
+            <th>DOB (new)</th>
+            <th>DOB (old)</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var merge in Model.Merges)
+    {
+        <tr>
+            <td>@merge.PersonFromF1.F1ID</td>
+            <td>@merge.PersonFromF1.FirstName</td>
+            <td>@merge.LastSeenPersonFromF1.FirstName</td>
+            <td>@merge.PersonFromF1.LastName</td>
+            <td>@merge.LastSeenPersonFromF1.LastName</td>
+            <td>@merge.PersonFromF1.DateOfBirth</td>
+            <td>@merge.LastSeenPersonFromF1.DateOfBirth</td>
+        </tr>
+    }
+    </tbody>
+</table>
