@@ -8,24 +8,27 @@ namespace F1PCO.Web.Integration.F1
 {
     public class F1AuthorizationService : IF1AuthorizationService
     {
+        private const string F1AccessTokenCookieKey = "F1AccessToken";
+        private const string F1RequestTokenCookieKey = "F1RequestToken";
+        private const string RequestTokenPath = "Tokens/RequestToken";
+        private const string AccessTokenPath = "Tokens/AccessToken";
+        private const string PortalUserAuthorizePath = "v1/PortalUser/Login";
         private Token _requestToken;
         private Token _accessToken;
         private readonly HttpResponseBase _response;
         private readonly string _consumerKey;
         private readonly string _consumerSecret;
         private readonly string _apiBaseUrl;
-        private readonly string _portalUserAuthorizeUrlFormat;
 
-        public F1AuthorizationService(HttpRequestBase request, HttpResponseBase response, string consumerKey, string consumerSecret, string apiBaseUrl, string portalUserAuthorizeUrlFormat)
+        public F1AuthorizationService(HttpRequestBase request, HttpResponseBase response, string consumerKey, string consumerSecret, string apiBaseUrl)
         {
             _response = response;
             _consumerKey = consumerKey;
             _consumerSecret = consumerSecret;
             _apiBaseUrl = apiBaseUrl;
-            _portalUserAuthorizeUrlFormat = portalUserAuthorizeUrlFormat;
 
-            request.Cookies.TryGetFromCookie("F1RequestToken", out _requestToken);
-            request.Cookies.TryGetFromCookie("F1AccessToken", out _accessToken);
+            request.Cookies.TryGetFromCookie(F1RequestTokenCookieKey, out _requestToken);
+            request.Cookies.TryGetFromCookie(F1AccessTokenCookieKey, out _accessToken);
         }
 
         public bool IsAuthorized
@@ -42,9 +45,10 @@ namespace F1PCO.Web.Integration.F1
         {
             GetRequestToken();
 
-            return _portalUserAuthorizeUrlFormat
-                .Replace("{oauth_token}", _requestToken.Value)
-                .Replace("{oauth_callback}", callbackUrl);
+            var builder = new UriBuilder(_apiBaseUrl);
+            builder.Path += "/" + PortalUserAuthorizePath.TrimStart('/');
+            builder.Query = string.Format("oauth_token={0}&oauth_callback={1}", _requestToken.Value, callbackUrl);
+            return builder.ToString();
         }
 
         public OAuthCredentials GetAccessTokenCredentials()
@@ -81,14 +85,14 @@ namespace F1PCO.Web.Integration.F1
 
             var request = new RestRequest
             {
-                Path = "Tokens/RequestToken"
+                Path = RequestTokenPath
             };
 
             var response = client.Request(request);
 
             var queryString = HttpUtility.ParseQueryString(response.Content);
             _requestToken = new Token(queryString["oauth_token"], queryString["oauth_token_secret"]);
-            _response.Cookies.SaveToCookie("F1RequestToken", _requestToken);
+            _response.Cookies.SaveToCookie(F1RequestTokenCookieKey, _requestToken);
             return _requestToken;
         }
 
@@ -116,14 +120,14 @@ namespace F1PCO.Web.Integration.F1
 
             var request = new RestRequest
             {
-                Path = "Tokens/AccessToken"
+                Path = AccessTokenPath
             };
 
             var response = client.Request(request);
 
             var queryString = HttpUtility.ParseQueryString(response.Content);
             _accessToken = new Token(queryString["oauth_token"], queryString["oauth_token_secret"]);
-            _response.Cookies.SaveToCookie("F1AccessToken", _accessToken);
+            _response.Cookies.SaveToCookie(F1AccessTokenCookieKey, _accessToken);
             return _accessToken;
         }
     }

@@ -111,7 +111,8 @@ namespace F1PCO.Web
                                   new SecurityModule(),
                                   new DiagnosticsModule(),
                                   new TimeModule(),
-                                  new F1Module()
+                                  new F1Module(),
+                                  new PCOModule()
                               };
 
             var builder = new ContainerBuilder();

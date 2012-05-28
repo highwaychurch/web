@@ -1,7 +1,7 @@
 ﻿using System.Web.Mvc;
 using F1PCO.Web.Integration.F1;
 
-namespace F1OAuthTest.Controllers
+namespace F1PCO.Web.Controllers
 {
     public class F1AuthController : Controller
     {
