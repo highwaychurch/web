@@ -18,6 +18,16 @@ namespace F1PCO.Web.Controllers
             _pcoPersonRepository = pcoPersonRepository;
         }
 
+        public ActionResult SearchByName(string searchTerm)
+        {
+            IEnumerable<PCOPerson> matchingPeople = new PCOPerson[] { };
+            if (string.IsNullOrWhiteSpace(searchTerm) == false)
+            {
+                matchingPeople = _pcoPersonRepository.SearchByName(searchTerm);
+            }
+            return View(new SearchByNameViewModel(searchTerm, matchingPeople));
+        }
+
         public ActionResult Index(IDocumentSession documentSession)
         {
             var pcoPeople = _pcoPersonRepository.GetPeople().ToArray();

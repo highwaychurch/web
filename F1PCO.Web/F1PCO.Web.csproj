@@ -211,6 +211,7 @@
     <Compile Include="ViewModels\PCOPeople\PersonMergeViewModel.cs" />
     <Compile Include="ViewModels\F1People\IndexViewModel.cs" />
     <Compile Include="ViewModels\F1People\PersonMergeViewModel.cs" />
+    <Compile Include="ViewModels\PCOPeople\SearchByNameViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="404.html" />
@@ -334,6 +335,7 @@
     <Content Include="Views\PCOPeople\Index.cshtml" />
     <Content Include="Views\Home\Ready.cshtml" />
     <Content Include="Views\F1People\SearchByName.cshtml" />
+    <Content Include="Views\PCOPeople\SearchByName.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
