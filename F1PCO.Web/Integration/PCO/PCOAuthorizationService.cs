@@ -5,25 +5,27 @@ using Hammock;
 using Hammock.Authentication.OAuth;
 using Highway.Shared.Mvc;
 
-namespace F1PCO.Web.Integration.F1
+namespace F1PCO.Web.Integration.PCO
 {
-    public class F1AuthorizationService : IF1AuthorizationService
+    public class PCOAuthorizationService : IPCOAuthorizationService
     {
-        private const string AccessTokenCookieKey = "F1AccessToken";
-        private const string RequestTokenCookieKey = "F1RequestToken";
-        private const string RequestTokenPath = "Tokens/RequestToken";
-        private const string AccessTokenPath = "Tokens/AccessToken";
-        private const string PortalUserAuthorizePath = "v1/PortalUser/Login";
+        private const string AccessTokenCookieKey = "PCOAccessToken";
+        private const string RequestTokenCookieKey = "PCORequestToken";
+        private const string RequestTokenPath = "oauth/request_token";
+        private const string AccessTokenPath = "oauth/access_token";
+        private const string PortalUserAuthorizePath = "oauth/authorize";
         private Token _requestToken;
         private Token _accessToken;
+        private readonly HttpRequestBase _request;
         private readonly HttpResponseBase _response;
         private readonly string _consumerKey;
         private readonly string _consumerSecret;
         private readonly string _apiBaseUrl;
-        private readonly Lazy<IF1PersonRepository> _testRepository;
+        private readonly Lazy<IPCOPersonRepository> _testRepository;
 
-        public F1AuthorizationService(HttpRequestBase request, HttpResponseBase response, string consumerKey, string consumerSecret, string apiBaseUrl, Lazy<IF1PersonRepository> testRepository)
+        public PCOAuthorizationService(HttpRequestBase request, HttpResponseBase response, string consumerKey, string consumerSecret, string apiBaseUrl, Lazy<IPCOPersonRepository> testRepository)
         {
+            _request = request;
             _response = response;
             _consumerKey = consumerKey;
             _consumerSecret = consumerSecret;
@@ -62,7 +64,7 @@ namespace F1PCO.Web.Integration.F1
 
         public string BuildPortalUserAuthorizationRequestUrl(string callbackUrl)
         {
-            GetRequestToken();
+            GetRequestToken(callbackUrl);
 
             var builder = new UriBuilder(_apiBaseUrl);
             builder.Path = builder.Path.TrimEnd('/') + "/" + PortalUserAuthorizePath.TrimStart('/');
@@ -84,13 +86,12 @@ namespace F1PCO.Web.Integration.F1
                        };
         }
 
-        public Token GetRequestToken()
+        public Token GetRequestToken(string callbackUrl)
         {
             var client =
                 new RestClient
                     {
                         Authority = _apiBaseUrl,
-                        VersionPath = "v1",
                         Credentials =
                             new OAuthCredentials
                                 {
@@ -98,13 +99,53 @@ namespace F1PCO.Web.Integration.F1
                                     SignatureMethod = OAuthSignatureMethod.HmacSha1,
                                     ParameterHandling = OAuthParameterHandling.HttpAuthorizationHeader,
                                     ConsumerKey = _consumerKey,
-                                    ConsumerSecret = _consumerSecret
+                                    ConsumerSecret = _consumerSecret,
+                                    CallbackUrl = callbackUrl
                                 }
                     };
 
             var request = new RestRequest
             {
                 Path = RequestTokenPath
+            };
+
+            var response = client.Request(request);
+
+            var queryString = HttpUtility.ParseQueryString(response.Content);
+            _requestToken = new Token(queryString["oauth_token"], queryString["oauth_token_secret"]);
+            _response.Cookies.SaveToCookie(RequestTokenCookieKey, _requestToken);
+            return _requestToken;
+        }
+
+        public Token RequestAndPersistAccessToken()
+        {
+            if (_requestToken == null) throw new InvalidOperationException("Cannot request an Access token until you have requested a Request token.");
+
+            var verifier = _request.QueryString["oauth_verifier"];
+            if (string.IsNullOrWhiteSpace(verifier))
+                throw new Exception("There was no oauth_verifier parameter on the callback request.");
+
+            var client =
+                new RestClient
+                    {
+                        Authority = _apiBaseUrl,
+                        Credentials =
+                            new OAuthCredentials
+                                {
+                                    Type = OAuthType.AccessToken,
+                                    SignatureMethod = OAuthSignatureMethod.HmacSha1,
+                                    ParameterHandling = OAuthParameterHandling.HttpAuthorizationHeader,
+                                    ConsumerKey = _consumerKey,
+                                    ConsumerSecret = _consumerSecret,
+                                    Token = _requestToken.Value,
+                                    TokenSecret = _requestToken.Secret,
+                                    Verifier = verifier
+                                }
+                    };
+
+            var request = new RestRequest
+            {
+                Path = AccessTokenPath
             };
 
             var response = client.Request(request);
@@ -118,41 +159,6 @@ namespace F1PCO.Web.Integration.F1
             }
 
             throw new Exception("An error occured: Status code: " + response.StatusCode, response.InnerException);
-        }
-
-        public Token RequestAndPersistAccessToken()
-        {
-            if (_requestToken == null) throw new InvalidOperationException("Cannot request an Access token until you have requested a Request token.");
-
-            var client =
-                new RestClient
-                    {
-                        Authority = _apiBaseUrl,
-                        VersionPath = "v1",
-                        Credentials =
-                            new OAuthCredentials
-                                {
-                                    Type = OAuthType.AccessToken,
-                                    SignatureMethod = OAuthSignatureMethod.HmacSha1,
-                                    ParameterHandling = OAuthParameterHandling.HttpAuthorizationHeader,
-                                    ConsumerKey = _consumerKey,
-                                    ConsumerSecret = _consumerSecret,
-                                    Token = _requestToken.Value,
-                                    TokenSecret = _requestToken.Secret
-                                }
-                    };
-
-            var request = new RestRequest
-            {
-                Path = AccessTokenPath
-            };
-
-            var response = client.Request(request);
-
-            var queryString = HttpUtility.ParseQueryString(response.Content);
-            _accessToken = new Token(queryString["oauth_token"], queryString["oauth_token_secret"]);
-            _response.Cookies.SaveToCookie(AccessTokenCookieKey, _accessToken);
-            return _accessToken;
         }
     }
 }

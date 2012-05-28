@@ -1,6 +1,7 @@
+
 using F1PCO.Web.Models;
 
-namespace F1PCO.Web.ViewModels.Person
+namespace F1PCO.Web.ViewModels.F1People
 {
     public class PersonMergeViewModel
     {

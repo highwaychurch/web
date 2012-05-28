@@ -180,9 +180,11 @@
     <Compile Include="App\Modules\MvcModule.cs" />
     <Compile Include="App\Modules\PCOModule.cs" />
     <Compile Include="App\Modules\PersistenceModule.cs" />
+    <Compile Include="Controllers\PCOPersonController.cs" />
     <Compile Include="Controllers\F1AuthController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\PersonController.cs" />
+    <Compile Include="Controllers\PCOAuthController.cs" />
+    <Compile Include="Controllers\F1PeopleController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -192,12 +194,22 @@
     <Compile Include="Integration\F1\IF1AuthorizationService.cs" />
     <Compile Include="Integration\F1\IF1ClientProvider.cs" />
     <Compile Include="Integration\F1\IF1PersonRepository.cs" />
+    <Compile Include="Integration\PCO\PCOAuthorizationService.cs" />
+    <Compile Include="Integration\PCO\PCOClientProvider.cs" />
+    <Compile Include="Integration\PCO\PCOPersonRepository.cs" />
+    <Compile Include="Integration\PCO\IPCOAuthorizationService.cs" />
+    <Compile Include="Integration\PCO\IPCOClientProvider.cs" />
+    <Compile Include="Integration\PCO\IPCOPersonRepository.cs" />
     <Compile Include="Integration\Token.cs" />
     <Compile Include="Models\F1Person.cs" />
+    <Compile Include="Models\PCOPerson.cs" />
     <Compile Include="Models\PersistedF1Token.cs" />
+    <Compile Include="Models\PersistedPCOToken.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ViewModels\Person\IndexViewModel.cs" />
-    <Compile Include="ViewModels\Person\PersonMergeViewModel.cs" />
+    <Compile Include="ViewModels\PCOPeople\IndexViewModel.cs" />
+    <Compile Include="ViewModels\PCOPeople\PersonMergeViewModel.cs" />
+    <Compile Include="ViewModels\F1People\IndexViewModel.cs" />
+    <Compile Include="ViewModels\F1People\PersonMergeViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="404.html" />
@@ -316,8 +328,11 @@
     <Content Include="bootstrap\less\wells.less" />
     <None Include="bootstrap\LICENSE" />
     <Content Include="Views\Shared\_LogOnPartial.cshtml" />
-    <Content Include="Views\Person\Index.cshtml" />
-    <Content Include="Views\Person\ExistingPeople.cshtml" />
+    <Content Include="Views\F1People\Index.cshtml" />
+    <Content Include="Views\F1People\ExistingPeople.cshtml" />
+    <Content Include="Views\PCOAuth\Ready.cshtml" />
+    <Content Include="Views\PCOPerson\ExistingPeople.cshtml" />
+    <Content Include="Views\PCOPerson\Index.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

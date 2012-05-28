@@ -4,16 +4,16 @@ using System.Linq;
 using System.Web.Mvc;
 using F1PCO.Web.Integration.F1;
 using F1PCO.Web.Models;
-using F1PCO.Web.ViewModels.Person;
+using F1PCO.Web.ViewModels.F1People;
 using Raven.Client;
 
 namespace F1PCO.Web.Controllers
 {
-    public class PersonController : Controller
+    public class F1PeopleController : Controller
     {
         private readonly IF1PersonRepository _f1PersonRepository;
 
-        public PersonController(IF1PersonRepository f1PersonRepository)
+        public F1PeopleController(IF1PersonRepository f1PersonRepository)
         {
             _f1PersonRepository = f1PersonRepository;
         }

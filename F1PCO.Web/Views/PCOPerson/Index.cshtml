@@ -1,0 +1,33 @@
+﻿@model F1PCO.Web.ViewModels.PCOPeople.IndexViewModel
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>People that look like Michael</h2>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>PCOID</th>
+            <th>First Name (new)</th>
+            <th>First Name (old)</th>
+            <th>Last Name (new)</th>
+            <th>Last Name (old)</th>
+            <th>DOB (new)</th>
+            <th>DOB (old)</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var merge in Model.Merges)
+    {
+        <tr>
+            <td>@merge.PersonFromPCO.PCOID</td>
+            <td>@merge.PersonFromPCO.FirstName</td>
+            <td>@merge.LastSeenPersonFromPCO.FirstName</td>
+            <td>@merge.PersonFromPCO.LastName</td>
+            <td>@merge.LastSeenPersonFromPCO.LastName</td>
+            <td>@merge.PersonFromPCO.DateOfBirth</td>
+            <td>@merge.LastSeenPersonFromPCO.DateOfBirth</td>
+        </tr>
+    }
+    </tbody>
+</table>

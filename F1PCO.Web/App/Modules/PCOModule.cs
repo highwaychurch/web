@@ -1,10 +1,11 @@
 using Autofac;
+using F1PCO.Web.Integration.PCO;
 
 namespace F1PCO.Web.App.Modules
 {
     public class PCOModule : Module
     {
-        public string ApiBaseUrlFormat { get; set; }
+        public string ApiBaseUrl { get; set; }
         public string ConsumerKey { get; set; }
         public string ConsumerSecret { get; set; }
 
@@ -12,15 +13,15 @@ namespace F1PCO.Web.App.Modules
         {
             base.Load(builder);
 
-            //builder.RegisterType<F1AuthorizationService>().As<IF1AuthorizationService>()
-            //    .WithParameter("apiBaseUrl", GetApiBaseUrl())
-            //    .WithParameter("consumerKey", ConsumerKey)
-            //    .WithParameter("consumerSecret", ConsumerSecret);
+            builder.RegisterType<PCOAuthorizationService>().As<IPCOAuthorizationService>()
+                .WithParameter("apiBaseUrl", ApiBaseUrl)
+                .WithParameter("consumerKey", ConsumerKey)
+                .WithParameter("consumerSecret", ConsumerSecret);
 
-            //builder.RegisterType<F1ClientProvider>().As<IF1ClientProvider>()
-            //    .WithParameter("apiBaseUrl", GetApiBaseUrl());
+            builder.RegisterType<PCOClientProvider>().As<IPCOClientProvider>()
+                .WithParameter("apiBaseUrl", ApiBaseUrl);
 
-            //builder.RegisterType<F1PersonRepository>().As<IF1PersonRepository>();
+            builder.RegisterType<PCOPersonRepository>().As<IPCOPersonRepository>();
         }
     }
 }
