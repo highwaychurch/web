@@ -4,6 +4,8 @@ namespace F1PCO.Web.Integration.F1
 {
     public interface IF1AuthorizationService
     {
+        bool TryAuthorizeWithPersistedAccessToken(Token persistedAccessToken);
+
         bool IsAuthorized { get; }
 
         Token RequestAndPersistAccessToken();

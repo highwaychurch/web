@@ -8,8 +8,8 @@ namespace F1PCO.Web.Integration.F1
 {
     public class F1AuthorizationService : IF1AuthorizationService
     {
-        private const string F1AccessTokenCookieKey = "F1AccessToken";
-        private const string F1RequestTokenCookieKey = "F1RequestToken";
+        private const string AccessTokenCookieKey = "F1AccessToken";
+        private const string RequestTokenCookieKey = "F1RequestToken";
         private const string RequestTokenPath = "Tokens/RequestToken";
         private const string AccessTokenPath = "Tokens/AccessToken";
         private const string PortalUserAuthorizePath = "v1/PortalUser/Login";
@@ -19,16 +19,34 @@ namespace F1PCO.Web.Integration.F1
         private readonly string _consumerKey;
         private readonly string _consumerSecret;
         private readonly string _apiBaseUrl;
+        private readonly Lazy<IF1PersonRepository> _testRepository;
 
-        public F1AuthorizationService(HttpRequestBase request, HttpResponseBase response, string consumerKey, string consumerSecret, string apiBaseUrl)
+        public F1AuthorizationService(HttpRequestBase request, HttpResponseBase response, string consumerKey, string consumerSecret, string apiBaseUrl, Lazy<IF1PersonRepository> testRepository)
         {
             _response = response;
             _consumerKey = consumerKey;
             _consumerSecret = consumerSecret;
             _apiBaseUrl = apiBaseUrl;
+            _testRepository = testRepository;
 
-            request.Cookies.TryGetFromCookie(F1RequestTokenCookieKey, out _requestToken);
-            request.Cookies.TryGetFromCookie(F1AccessTokenCookieKey, out _accessToken);
+            request.Cookies.TryGetFromCookie(RequestTokenCookieKey, out _requestToken);
+            request.Cookies.TryGetFromCookie(AccessTokenCookieKey, out _accessToken);
+        }
+
+        public bool TryAuthorizeWithPersistedAccessToken(Token persistedAccessToken)
+        {
+            _accessToken = persistedAccessToken;
+            _response.Cookies.SaveToCookie(AccessTokenCookieKey, persistedAccessToken);
+
+            try
+            {
+                _testRepository.Value.GetPeople();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public bool IsAuthorized
@@ -92,7 +110,7 @@ namespace F1PCO.Web.Integration.F1
 
             var queryString = HttpUtility.ParseQueryString(response.Content);
             _requestToken = new Token(queryString["oauth_token"], queryString["oauth_token_secret"]);
-            _response.Cookies.SaveToCookie(F1RequestTokenCookieKey, _requestToken);
+            _response.Cookies.SaveToCookie(RequestTokenCookieKey, _requestToken);
             return _requestToken;
         }
 
@@ -127,7 +145,7 @@ namespace F1PCO.Web.Integration.F1
 
             var queryString = HttpUtility.ParseQueryString(response.Content);
             _accessToken = new Token(queryString["oauth_token"], queryString["oauth_token_secret"]);
-            _response.Cookies.SaveToCookie(F1AccessTokenCookieKey, _accessToken);
+            _response.Cookies.SaveToCookie(AccessTokenCookieKey, _accessToken);
             return _accessToken;
         }
     }

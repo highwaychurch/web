@@ -1,4 +1,4 @@
-namespace F1PCO.Web.Integration.F1
+namespace F1PCO.Web.Integration
 {
     public class Token
     {

@@ -17,12 +17,15 @@ namespace F1PCO.Web.App.Modules
             builder.RegisterType<F1AuthorizationService>().As<IF1AuthorizationService>()
                 .WithParameter("apiBaseUrl", GetApiBaseUrl())
                 .WithParameter("consumerKey", ConsumerKey)
-                .WithParameter("consumerSecret", ConsumerSecret);
+                .WithParameter("consumerSecret", ConsumerSecret)
+                .InstancePerLifetimeScope();
 
             builder.RegisterType<F1ClientProvider>().As<IF1ClientProvider>()
-                .WithParameter("apiBaseUrl", GetApiBaseUrl());
+                .WithParameter("apiBaseUrl", GetApiBaseUrl())
+                .InstancePerLifetimeScope();
 
-            builder.RegisterType<F1PersonRepository>().As<IF1PersonRepository>();
+            builder.RegisterType<F1PersonRepository>().As<IF1PersonRepository>()
+                .InstancePerLifetimeScope();
         }
 
         private string GetApiBaseUrl()
