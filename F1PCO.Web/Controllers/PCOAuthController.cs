@@ -8,20 +8,29 @@ namespace F1PCO.Web.Controllers
 {
     public class PCOAuthController : Controller
     {
-                private readonly IPCOAuthorizationService _pcoAuthorizationService;
+        private readonly IPCOAuthorizationService _pcoAuthorizationService;
 
         public PCOAuthController(IPCOAuthorizationService pcoAuthorizationService)
         {
             _pcoAuthorizationService = pcoAuthorizationService;
         }
 
-        public ActionResult Authenticate()
+        public ActionResult Authenticate(IDocumentSession session)
         {
             if (_pcoAuthorizationService.IsAuthorized)
             {
-                return RedirectToAction("Ready");
+                return RedirectToAction("Ready", "Home");
             }
-            
+
+            var persistedpcoAccessToken = session.Query<PersistedPCOToken>().FirstOrDefault();
+            if (persistedpcoAccessToken != null)
+            {
+                if (_pcoAuthorizationService.TryAuthorizeWithPersistedAccessToken(persistedpcoAccessToken.AccessToken))
+                {
+                    return RedirectToAction("Ready", "Home");
+                }
+            }
+
             var callbackUrl = Url.Action("CallBack", "PCOAuth", null, Request.Url.Scheme);
             return Redirect(_pcoAuthorizationService.BuildPortalUserAuthorizationRequestUrl(callbackUrl));
         }
@@ -40,13 +49,7 @@ namespace F1PCO.Web.Controllers
                 session.Store(persistedAccessToken);
             }
 
-            return RedirectToAction("Ready");
+            return RedirectToAction("Ready", "Home");
         }
-
-        public ActionResult Ready()
-        {
-            return View();
-        }
-
     }
 }

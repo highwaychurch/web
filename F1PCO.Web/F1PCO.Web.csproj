@@ -14,7 +14,7 @@
     <RootNamespace>F1PCO.Web</RootNamespace>
     <AssemblyName>F1PCO.Web</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <MvcBuildViews>false</MvcBuildViews>
+    <MvcBuildViews>true</MvcBuildViews>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
     <FileUpgradeFlags>
@@ -180,7 +180,7 @@
     <Compile Include="App\Modules\MvcModule.cs" />
     <Compile Include="App\Modules\PCOModule.cs" />
     <Compile Include="App\Modules\PersistenceModule.cs" />
-    <Compile Include="Controllers\PCOPersonController.cs" />
+    <Compile Include="Controllers\PCOPeopleController.cs" />
     <Compile Include="Controllers\F1AuthController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PCOAuthController.cs" />
@@ -284,7 +284,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\F1Auth\Ready.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
@@ -330,9 +329,9 @@
     <Content Include="Views\Shared\_LogOnPartial.cshtml" />
     <Content Include="Views\F1People\Index.cshtml" />
     <Content Include="Views\F1People\ExistingPeople.cshtml" />
-    <Content Include="Views\PCOAuth\Ready.cshtml" />
-    <Content Include="Views\PCOPerson\ExistingPeople.cshtml" />
-    <Content Include="Views\PCOPerson\Index.cshtml" />
+    <Content Include="Views\PCOPeople\ExistingPeople.cshtml" />
+    <Content Include="Views\PCOPeople\Index.cshtml" />
+    <Content Include="Views\Home\Ready.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -15,13 +15,22 @@ namespace F1PCO.Web.Controllers
             _f1AuthorizationService = f1AuthorizationService;
         }
 
-        public ActionResult Authenticate()
+        public ActionResult Authenticate(IDocumentSession session)
         {
             if (_f1AuthorizationService.IsAuthorized)
             {
-                return RedirectToAction("Ready");
+                return RedirectToAction("Authenticate", "PCOAuth");
             }
-            
+
+            var persistedF1AccessToken = session.Query<PersistedF1Token>().FirstOrDefault();
+            if (persistedF1AccessToken != null)
+            {
+                if (_f1AuthorizationService.TryAuthorizeWithPersistedAccessToken(persistedF1AccessToken.AccessToken))
+                {
+                    return RedirectToAction("Authenticate", "PCOAuth");
+                }
+            }
+           
             var callbackUrl = Url.Action("CallBack", "F1Auth", null, Request.Url.Scheme);
             return Redirect(_f1AuthorizationService.BuildPortalUserAuthorizationRequestUrl(callbackUrl));
         }
@@ -40,12 +49,7 @@ namespace F1PCO.Web.Controllers
                 session.Store(persistedAccessToken);
             }
 
-            return RedirectToAction("Ready");
-        }
-
-        public ActionResult Ready()
-        {
-            return View();
+            return RedirectToAction("Authenticate", "PCOAuth");
         }
     }
 }

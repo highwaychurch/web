@@ -9,11 +9,11 @@ using Raven.Client;
 
 namespace F1PCO.Web.Controllers
 {
-    public class PCOPersonController : Controller
+    public class PCOPeopleController : Controller
     {
         private readonly IPCOPersonRepository _pcoPersonRepository;
 
-        public PCOPersonController(IPCOPersonRepository pcoPersonRepository)
+        public PCOPeopleController(IPCOPersonRepository pcoPersonRepository)
         {
             _pcoPersonRepository = pcoPersonRepository;
         }
