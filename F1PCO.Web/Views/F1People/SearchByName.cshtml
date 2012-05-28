@@ -1,0 +1,40 @@
+﻿@model F1PCO.Web.ViewModels.F1People.SearchByNameViewModel
+
+<h2>People with names like '@Model.SearchTerm'</h2>
+@using (Html.BeginForm())
+{
+    <fieldset>
+        <legend>Search for a person in F1 by name</legend>
+        <div class="control-group">
+            <label class="control-label" for="focusedInput">Search term</label>
+            <div class="controls">
+                @Html.TextBoxFor(x => x.SearchTerm)
+            </div>
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Search</button>
+            <button type="reset" class="btn">Clear</button>
+        </div>
+    </fieldset>
+}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>F1ID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>DOB</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var person in Model.MatchingPeople)
+    {
+        <tr>
+            <td>@person.F1ID</td>
+            <td>@person.FirstName</td>
+            <td>@person.LastName</td>
+            <td>@person.DateOfBirth</td>
+        </tr>
+    }
+    </tbody>
+</table>

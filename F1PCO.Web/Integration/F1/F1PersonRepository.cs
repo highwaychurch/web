@@ -9,6 +9,7 @@ namespace F1PCO.Web.Integration.F1
 {
     public class F1PersonRepository : IF1PersonRepository
     {
+        private const string V2JsonAPIContentType = "application/vnd.fellowshiponeapi.com.people.people.v2+json";
         private readonly IF1ClientProvider _clientProvider;
 
         public F1PersonRepository(IF1ClientProvider clientProvider)
@@ -16,19 +17,23 @@ namespace F1PCO.Web.Integration.F1
             _clientProvider = clientProvider;
         }
 
-        public IEnumerable<F1Person> GetPeople()
+        public IEnumerable<F1Person> SearchByName(string searchTerm, int maxResults = 10)
         {
+            if (string.IsNullOrWhiteSpace(searchTerm))
+                throw new ArgumentException("searchTerm cannot be blank", "searchTerm");
+            if (maxResults > 100)
+                throw new ArgumentOutOfRangeException("maxResults", maxResults, "maxResults should be less than 100");
+
             var request = new RestRequest
             {
                 Path = "People/Search",
             };
 
-            //request.AddParameter("lastUpdatedDate", lastDate);
-            request.AddParameter("searchFor", "michael");
-            request.AddParameter("recordsperpage", "1000");
-            request.AddParameter("include", "attributes,addresses,communications");
+            request.AddParameter("searchFor", searchTerm);
+            request.AddParameter("recordsperpage", maxResults.ToString());
+            request.AddParameter("include", "attributes,addresses");
 
-            using (var response = _clientProvider.GetRestClient("application/vnd.fellowshiponeapi.com.people.people.v2+json").Request(request))
+            using (var response = _clientProvider.GetRestClient(V2JsonAPIContentType).Request(request))
             {
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
@@ -43,6 +48,8 @@ namespace F1PCO.Web.Integration.F1
         private static IEnumerable<F1Person> GetF1PeopleFromJson(string json)
         {
             dynamic people = JObject.Parse(json);
+            if (people.results == null || people.results.person == null) yield break;
+
             foreach (var p in people.results.person)
             {
                 var person = new F1Person

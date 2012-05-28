@@ -41,7 +41,7 @@ namespace F1PCO.Web.Integration.F1
 
             try
             {
-                _testRepository.Value.GetPeople();
+                _testRepository.Value.SearchByName("TEST", 1);
                 return true;
             }
             catch

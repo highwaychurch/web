@@ -18,9 +18,19 @@ namespace F1PCO.Web.Controllers
             _f1PersonRepository = f1PersonRepository;
         }
 
+        public ActionResult SearchByName(string searchTerm)
+        {
+            IEnumerable<F1Person> matchingPeople = new F1Person[] {};
+            if (string.IsNullOrWhiteSpace(searchTerm) == false)
+            {
+                matchingPeople = _f1PersonRepository.SearchByName(searchTerm);
+            }
+            return View(new SearchByNameViewModel(searchTerm, matchingPeople));
+        }
+
         public ActionResult Index(IDocumentSession documentSession)
         {
-            var f1People = _f1PersonRepository.GetPeople().ToArray();
+            var f1People = _f1PersonRepository.SearchByName("michael").ToArray();
             var f1PeopleIds = f1People.Select(p => p.F1ID).ToArray();
 
             var previouslySeenPeople = documentSession.Advanced.LuceneQuery<F1Person>()
@@ -44,6 +54,8 @@ namespace F1PCO.Web.Controllers
             var people = documentSession.Query<F1Person>().Where(p => p.DateOfBirth > new DateTime(1990, 1, 1));
             return View(people);
         }
+
+
 
         private IndexViewModel BuildViewModel(IEnumerable<F1Person> f1People, IEnumerable<F1Person> previouslySeenPeople)
         {
