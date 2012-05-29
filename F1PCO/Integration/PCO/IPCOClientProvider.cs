@@ -1,6 +1,6 @@
 using Hammock;
 
-namespace F1PCO.Web.Integration.PCO
+namespace F1PCO.Integration.PCO
 {
     public interface IPCOClientProvider
     {

@@ -5,7 +5,7 @@ using F1PCO.OAuth;
 using Hammock;
 using Hammock.Authentication.OAuth;
 
-namespace F1PCO.Web.Integration.PCO
+namespace F1PCO.Integration.PCO
 {
     public class PCOAuthorizationService : IPCOAuthorizationService
     {

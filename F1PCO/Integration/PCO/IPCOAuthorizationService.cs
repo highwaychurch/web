@@ -1,6 +1,6 @@
 using F1PCO.OAuth;
 
-namespace F1PCO.Web.Integration.PCO
+namespace F1PCO.Integration.PCO
 {
     public interface IPCOAuthorizationService
     {

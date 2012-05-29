@@ -5,7 +5,7 @@ using System.Net;
 using System.Xml.Linq;
 using Hammock;
 
-namespace F1PCO.Web.Integration.PCO
+namespace F1PCO.Integration.PCO
 {
     public class PCOPersonRepository : IPCOPersonRepository
     {

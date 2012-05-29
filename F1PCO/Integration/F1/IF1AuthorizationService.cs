@@ -1,6 +1,6 @@
 using F1PCO.OAuth;
 
-namespace F1PCO.Web.Integration.F1
+namespace F1PCO.Integration.F1
 {
     public interface IF1AuthorizationService
     {

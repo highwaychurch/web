@@ -4,7 +4,7 @@ using Hammock;
 using Hammock.Authentication.OAuth;
 using Raven.Client;
 
-namespace F1PCO.Web.Integration.PCO
+namespace F1PCO.Integration.PCO
 {
     public class PCOClientProvider : IPCOClientProvider
     {

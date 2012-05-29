@@ -1,5 +1,5 @@
 using Autofac;
-using F1PCO.Web.Integration.F1;
+using F1PCO.Integration.F1;
 
 namespace F1PCO.Web.App.Modules
 {

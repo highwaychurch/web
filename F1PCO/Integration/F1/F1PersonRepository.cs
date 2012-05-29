@@ -4,7 +4,7 @@ using System.Net;
 using Hammock;
 using Newtonsoft.Json.Linq;
 
-namespace F1PCO.Web.Integration.F1
+namespace F1PCO.Integration.F1
 {
     public class F1PersonRepository : IF1PersonRepository
     {

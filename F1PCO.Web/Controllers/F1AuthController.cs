@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Web.Mvc;
+using F1PCO.Integration.F1;
 using F1PCO.OAuth;
-using F1PCO.Web.Integration.F1;
 using Highway.Shared.Mvc;
 using Raven.Client;
 

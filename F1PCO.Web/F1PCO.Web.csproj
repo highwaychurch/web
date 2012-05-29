@@ -188,18 +188,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Integration\F1\F1AuthorizationService.cs" />
-    <Compile Include="Integration\F1\IF1AuthorizationService.cs" />
-    <Compile Include="Integration\F1\F1ClientProvider.cs" />
-    <Compile Include="Integration\F1\F1PersonRepository.cs" />
-    <Compile Include="Integration\F1\IF1ClientProvider.cs" />
-    <Compile Include="Integration\F1\IF1PersonRepository.cs" />
-    <Compile Include="Integration\PCO\IPCOAuthorizationService.cs" />
-    <Compile Include="Integration\PCO\IPCOClientProvider.cs" />
-    <Compile Include="Integration\PCO\IPCOPersonRepository.cs" />
-    <Compile Include="Integration\PCO\PCOAuthorizationService.cs" />
-    <Compile Include="Integration\PCO\PCOClientProvider.cs" />
-    <Compile Include="Integration\PCO\PCOPersonRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\F1People\SearchByNameViewModel.cs" />
     <Compile Include="ViewModels\PCOPeople\IndexViewModel.cs" />
