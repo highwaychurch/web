@@ -1,17 +1,12 @@
-﻿using Hammock.Authentication.OAuth;
+using F1PCO.OAuth;
 
 namespace F1PCO.Web.Integration.F1
 {
     public interface IF1AuthorizationService
     {
-        bool TryAuthorizeWithPersistedAccessToken(Token persistedAccessToken);
-
-        bool IsAuthorized { get; }
-
-        Token RequestAndPersistAccessToken();
-
-        string BuildPortalUserAuthorizationRequestUrl(string callbackUrl);
-
-        OAuthCredentials GetAccessTokenCredentials();
+        RequestToken GetRequestToken(string callbackUrl);
+        AccessToken GetAccessToken(RequestToken requestToken);
+        bool TryConnectWithPersistedAccessToken(AccessToken persistedAccessToken);
+        string BuildPortalUserAuthorizationRequestUrl(RequestToken requestToken, string callbackUrl);
     }
 }

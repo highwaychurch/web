@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Web.Mvc;
-using F1PCO.Web.Models;
 using Raven.Client;
 
 namespace F1PCO.Web.Controllers
@@ -9,7 +8,13 @@ namespace F1PCO.Web.Controllers
     {
         public ActionResult Index(IDocumentSession session)
         {
-            if (session.Query<PersistedF1Token>().Any() && session.Query<PersistedPCOToken>().Any())
+            var mike = session.Query<User>().FirstOrDefault();
+            if (mike == null)
+            {
+                mike = new User {FirstName = "Mike", LastName = "Noonan"};
+                session.Store(mike);
+            }
+            if (mike.F1AccessToken == null || mike.PCOAccessToken == null)
             {
                 return RedirectToAction("Authenticate", "F1Auth");
             }

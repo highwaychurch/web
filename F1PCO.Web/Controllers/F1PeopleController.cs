@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using F1PCO.Web.Integration.F1;
-using F1PCO.Web.Models;
 using F1PCO.Web.ViewModels.F1People;
 using Raven.Client;
 

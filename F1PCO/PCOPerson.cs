@@ -1,16 +1,16 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
-namespace F1PCO.Web.Models
+namespace F1PCO
 {
-    public class F1Person
+    public class PCOPerson
     {
-        public F1Person()
+        public PCOPerson()
         {
             PersonLogs = new List<string>();
         }
 
-        public string F1ID { get; set; }
+        public string PCOID { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Gender { get; set; }

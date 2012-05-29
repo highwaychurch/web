@@ -19,6 +19,8 @@ namespace F1PCO.Web.App.Modules
                 .WithParameter("consumerSecret", ConsumerSecret);
 
             builder.RegisterType<PCOClientProvider>().As<IPCOClientProvider>()
+                .WithParameter("consumerKey", ConsumerKey)
+                .WithParameter("consumerSecret", ConsumerSecret)
                 .WithParameter("apiBaseUrl", ApiBaseUrl);
 
             builder.RegisterType<PCOPersonRepository>().As<IPCOPersonRepository>();

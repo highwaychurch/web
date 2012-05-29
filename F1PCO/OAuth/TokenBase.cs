@@ -1,10 +1,10 @@
-namespace F1PCO.Web.Integration
+namespace F1PCO.OAuth
 {
-    public class Token
+    public abstract class TokenBase
     {
-        public Token() { }
+        protected TokenBase() { }
 
-        public Token(string value, string secret)
+        protected TokenBase(string value, string secret)
         {
             Value = value;
             Secret = secret;

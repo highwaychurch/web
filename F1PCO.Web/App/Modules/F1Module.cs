@@ -22,6 +22,8 @@ namespace F1PCO.Web.App.Modules
 
             builder.RegisterType<F1ClientProvider>().As<IF1ClientProvider>()
                 .WithParameter("apiBaseUrl", GetApiBaseUrl())
+                .WithParameter("consumerKey", ConsumerKey)
+                .WithParameter("consumerSecret", ConsumerSecret)
                 .InstancePerLifetimeScope();
 
             builder.RegisterType<F1PersonRepository>().As<IF1PersonRepository>()

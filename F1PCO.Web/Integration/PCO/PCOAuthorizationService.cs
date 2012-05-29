@@ -1,46 +1,32 @@
 using System;
 using System.Net;
 using System.Web;
+using F1PCO.OAuth;
 using Hammock;
 using Hammock.Authentication.OAuth;
-using Highway.Shared.Mvc;
 
 namespace F1PCO.Web.Integration.PCO
 {
     public class PCOAuthorizationService : IPCOAuthorizationService
     {
-        private const string AccessTokenCookieKey = "PCOAccessToken";
-        private const string RequestTokenCookieKey = "PCORequestToken";
         private const string RequestTokenPath = "oauth/request_token";
         private const string AccessTokenPath = "oauth/access_token";
         private const string PortalUserAuthorizePath = "oauth/authorize";
-        private Token _requestToken;
-        private Token _accessToken;
-        private readonly HttpRequestBase _request;
-        private readonly HttpResponseBase _response;
         private readonly string _consumerKey;
         private readonly string _consumerSecret;
         private readonly string _apiBaseUrl;
         private readonly Lazy<IPCOPersonRepository> _testRepository;
 
-        public PCOAuthorizationService(HttpRequestBase request, HttpResponseBase response, string consumerKey, string consumerSecret, string apiBaseUrl, Lazy<IPCOPersonRepository> testRepository)
+        public PCOAuthorizationService(string consumerKey, string consumerSecret, string apiBaseUrl, Lazy<IPCOPersonRepository> testRepository)
         {
-            _request = request;
-            _response = response;
             _consumerKey = consumerKey;
             _consumerSecret = consumerSecret;
             _apiBaseUrl = apiBaseUrl;
             _testRepository = testRepository;
-
-            request.Cookies.TryGetFromCookie(RequestTokenCookieKey, out _requestToken);
-            request.Cookies.TryGetFromCookie(AccessTokenCookieKey, out _accessToken);
         }
 
-        public bool TryAuthorizeWithPersistedAccessToken(Token persistedAccessToken)
+        public bool TryConnectWithPersistedAccessToken(AccessToken persistedAccessToken)
         {
-            _accessToken = persistedAccessToken;
-            _response.Cookies.SaveToCookie(AccessTokenCookieKey, persistedAccessToken);
-
             try
             {
                 _testRepository.Value.GetPeople();
@@ -52,41 +38,15 @@ namespace F1PCO.Web.Integration.PCO
             }
         }
 
-        public bool IsAuthorized
+        public string BuildAuthorizationRequestUrl(RequestToken requestToken, string callbackUrl)
         {
-            get { return AccessToken != null; }
-        }
-
-        public Token AccessToken
-        {
-            get { return _accessToken; }
-        }
-
-        public string BuildPortalUserAuthorizationRequestUrl(string callbackUrl)
-        {
-            GetRequestToken(callbackUrl);
-
             var builder = new UriBuilder(_apiBaseUrl);
             builder.Path = builder.Path.TrimEnd('/') + "/" + PortalUserAuthorizePath.TrimStart('/');
-            builder.Query = string.Format("oauth_token={0}&oauth_callback={1}", _requestToken.Value, callbackUrl);
+            builder.Query = string.Format("oauth_token={0}&oauth_callback={1}", requestToken.Value, callbackUrl);
             return builder.ToString();
         }
 
-        public OAuthCredentials GetAccessTokenCredentials()
-        {
-            return new OAuthCredentials
-                       {
-                           Type = OAuthType.AccessToken,
-                           SignatureMethod = OAuthSignatureMethod.HmacSha1,
-                           ParameterHandling = OAuthParameterHandling.HttpAuthorizationHeader,
-                           ConsumerKey = _consumerKey,
-                           ConsumerSecret = _consumerSecret,
-                           Token = AccessToken.Value,
-                           TokenSecret = AccessToken.Secret
-                       };
-        }
-
-        public Token GetRequestToken(string callbackUrl)
+        public RequestToken GetRequestToken(string callbackUrl)
         {
             var client =
                 new RestClient
@@ -111,17 +71,21 @@ namespace F1PCO.Web.Integration.PCO
 
             var response = client.Request(request);
 
-            var queryString = HttpUtility.ParseQueryString(response.Content);
-            _requestToken = new Token(queryString["oauth_token"], queryString["oauth_token_secret"]);
-            _response.Cookies.SaveToCookie(RequestTokenCookieKey, _requestToken);
-            return _requestToken;
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var queryString = HttpUtility.ParseQueryString(response.Content);
+                var requestToken = new RequestToken(queryString["oauth_token"], queryString["oauth_token_secret"]);
+                return requestToken;
+            }
+
+            throw new Exception("An error occured: Status code: " + response.StatusCode, response.InnerException);
         }
 
-        public Token RequestAndPersistAccessToken()
+        public AccessToken GetAccessToken(RequestToken requestToken, string verifier = null)
         {
-            if (_requestToken == null) throw new InvalidOperationException("Cannot request an Access token until you have requested a Request token.");
+            if (requestToken == null) throw new InvalidOperationException("Cannot get the Access token without a Request token.");
+            if (verifier == null) throw new InvalidOperationException("Cannot get the Access token without a verifer");
 
-            var verifier = _request.QueryString["oauth_verifier"];
             if (string.IsNullOrWhiteSpace(verifier))
                 throw new Exception("There was no oauth_verifier parameter on the callback request.");
 
@@ -137,8 +101,8 @@ namespace F1PCO.Web.Integration.PCO
                                     ParameterHandling = OAuthParameterHandling.HttpAuthorizationHeader,
                                     ConsumerKey = _consumerKey,
                                     ConsumerSecret = _consumerSecret,
-                                    Token = _requestToken.Value,
-                                    TokenSecret = _requestToken.Secret,
+                                    Token = requestToken.Value,
+                                    TokenSecret = requestToken.Secret,
                                     Verifier = verifier
                                 }
                     };
@@ -153,9 +117,8 @@ namespace F1PCO.Web.Integration.PCO
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 var queryString = HttpUtility.ParseQueryString(response.Content);
-                _accessToken = new Token(queryString["oauth_token"], queryString["oauth_token_secret"]);
-                _response.Cookies.SaveToCookie(AccessTokenCookieKey, _accessToken);
-                return _accessToken;
+                var accessToken = new AccessToken(queryString["oauth_token"], queryString["oauth_token_secret"]);
+                return accessToken;
             }
 
             throw new Exception("An error occured: Status code: " + response.StatusCode, response.InnerException);

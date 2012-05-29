@@ -74,6 +74,7 @@ namespace F1PCO.Web
 
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
+            filters.Add(new RequireHttpsAttribute());
             filters.Add(new HandleErrorAttribute());
         }
 

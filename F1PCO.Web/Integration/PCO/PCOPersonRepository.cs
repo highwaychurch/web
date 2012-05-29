@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Xml.Linq;
-using F1PCO.Web.Models;
 using Hammock;
 
 namespace F1PCO.Web.Integration.PCO

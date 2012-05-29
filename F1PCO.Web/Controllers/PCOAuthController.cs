@@ -1,53 +1,59 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Web.Mvc;
+using F1PCO.OAuth;
 using F1PCO.Web.Integration.PCO;
-using F1PCO.Web.Models;
+using Highway.Shared.Mvc;
 using Raven.Client;
 
 namespace F1PCO.Web.Controllers
 {
     public class PCOAuthController : Controller
     {
+        private const string PCORequestTokenCookieKey = "PCORequestToken";
         private readonly IPCOAuthorizationService _pcoAuthorizationService;
+        private readonly IDocumentSession _session;
 
-        public PCOAuthController(IPCOAuthorizationService pcoAuthorizationService)
+        public PCOAuthController(IPCOAuthorizationService pcoAuthorizationService, IDocumentSession session)
         {
             _pcoAuthorizationService = pcoAuthorizationService;
+            _session = session;
         }
 
-        public ActionResult Authenticate(IDocumentSession session)
+        public ActionResult Authenticate()
         {
-            if (_pcoAuthorizationService.IsAuthorized)
-            {
-                return RedirectToAction("Ready", "Home");
-            }
+            var user = _session.Query<User>().FirstOrDefault();
+            if (user == null) throw new InvalidOperationException("There is no current user!");
 
-            var persistedpcoAccessToken = session.Query<PersistedPCOToken>().FirstOrDefault();
-            if (persistedpcoAccessToken != null)
+            if (user.PCOAccessToken != null)
             {
-                if (_pcoAuthorizationService.TryAuthorizeWithPersistedAccessToken(persistedpcoAccessToken.AccessToken))
+                if (_pcoAuthorizationService.TryConnectWithPersistedAccessToken(user.PCOAccessToken))
                 {
+                    // PCO is working with the persisted AccessToken so move on to Ready
                     return RedirectToAction("Ready", "Home");
                 }
             }
 
+            // Otherwise start the OAuth dance with PCO
             var callbackUrl = Url.Action("CallBack", "PCOAuth", null, Request.Url.Scheme);
-            return Redirect(_pcoAuthorizationService.BuildPortalUserAuthorizationRequestUrl(callbackUrl));
+            var requestToken = _pcoAuthorizationService.GetRequestToken(callbackUrl);
+            Response.Cookies.SaveToCookie(PCORequestTokenCookieKey, requestToken);
+            var oauthRedirect = _pcoAuthorizationService.BuildAuthorizationRequestUrl(requestToken, callbackUrl);
+            return Redirect(oauthRedirect);
         }
 
-        public ActionResult CallBack(IDocumentSession session)
+        public ActionResult CallBack(string oauth_verifier)
         {
-            var accessToken = _pcoAuthorizationService.RequestAndPersistAccessToken();
-            var persistedAccessToken = session.Query<PersistedPCOToken>().FirstOrDefault();
-            if (persistedAccessToken != null)
-            {
-                persistedAccessToken.AccessToken = accessToken;
-            }
-            else
-            {
-                persistedAccessToken = new PersistedPCOToken {AccessToken = accessToken};
-                session.Store(persistedAccessToken);
-            }
+            var user = _session.Query<User>().FirstOrDefault();
+            if (user == null) throw new InvalidOperationException("There is no current user!");
+
+            RequestToken requestToken;
+            if (Request.Cookies.TryGetFromCookie(PCORequestTokenCookieKey, out requestToken) == false)
+                throw new InvalidOperationException("The RequestToken could not be retrieved from the cookie.");
+
+            var accessToken = _pcoAuthorizationService.GetAccessToken(requestToken, oauth_verifier);
+
+            user.PCOAccessToken = accessToken;
 
             return RedirectToAction("Ready", "Home");
         }

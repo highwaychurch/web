@@ -1,16 +1,24 @@
+using System;
+using System.Linq;
 using Hammock;
+using Hammock.Authentication.OAuth;
+using Raven.Client;
 
 namespace F1PCO.Web.Integration.PCO
 {
     public class PCOClientProvider : IPCOClientProvider
     {
-        private readonly IPCOAuthorizationService _authorizationService;
+        private readonly IDocumentSession _session;
         private readonly string _apiBaseUrl;
+        private readonly string _consumerKey;
+        private readonly string _consumerSecret;
 
-        public PCOClientProvider(IPCOAuthorizationService authorizationService, string apiBaseUrl)
+        public PCOClientProvider(IDocumentSession session, string apiBaseUrl, string consumerKey, string consumerSecret)
         {
-            _authorizationService = authorizationService;
+            _session = session;
             _apiBaseUrl = apiBaseUrl;
+            _consumerKey = consumerKey;
+            _consumerSecret = consumerSecret;
         }
 
         public IRestClient GetRestClient(string contentType = null)
@@ -19,7 +27,7 @@ namespace F1PCO.Web.Integration.PCO
                 new RestClient
                        {
                            Authority = _apiBaseUrl,
-                           Credentials = _authorizationService.GetAccessTokenCredentials(),
+                           Credentials = GetAccessTokenCredentials(),
                        };
             if (string.IsNullOrWhiteSpace(contentType) == false)
             {
@@ -27,6 +35,29 @@ namespace F1PCO.Web.Integration.PCO
             }
 
             return client;
+        }
+
+        public OAuthCredentials GetAccessTokenCredentials()
+        {
+            var user = _session.Query<User>().FirstOrDefault();
+            if (user == null)
+                throw new InvalidOperationException("There is no current user.");
+
+            if (user.F1AccessToken != null)
+            {
+                return new OAuthCredentials
+                           {
+                               Type = OAuthType.AccessToken,
+                               SignatureMethod = OAuthSignatureMethod.HmacSha1,
+                               ParameterHandling = OAuthParameterHandling.HttpAuthorizationHeader,
+                               ConsumerKey = _consumerKey,
+                               ConsumerSecret = _consumerSecret,
+                               Token = user.PCOAccessToken.Value,
+                               TokenSecret = user.PCOAccessToken.Secret
+                           };
+            }
+
+            return null;
         }
     }
 }
