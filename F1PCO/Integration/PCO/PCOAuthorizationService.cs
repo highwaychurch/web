@@ -2,8 +2,8 @@ using System;
 using System.Net;
 using System.Web;
 using F1PCO.OAuth;
-using Hammock;
-using Hammock.Authentication.OAuth;
+using RestSharp;
+using RestSharp.Authenticators;
 
 namespace F1PCO.Integration.PCO
 {
@@ -49,27 +49,12 @@ namespace F1PCO.Integration.PCO
         public RequestToken GetRequestToken(string callbackUrl)
         {
             var client =
-                new RestClient
+                new RestClient(_apiBaseUrl)
                     {
-                        Authority = _apiBaseUrl,
-                        Credentials =
-                            new OAuthCredentials
-                                {
-                                    Type = OAuthType.RequestToken,
-                                    SignatureMethod = OAuthSignatureMethod.HmacSha1,
-                                    ParameterHandling = OAuthParameterHandling.HttpAuthorizationHeader,
-                                    ConsumerKey = _consumerKey,
-                                    ConsumerSecret = _consumerSecret,
-                                    CallbackUrl = callbackUrl
-                                }
+                        Authenticator = OAuth1Authenticator.ForRequestToken(_consumerKey, _consumerSecret, callbackUrl)
                     };
-
-            var request = new RestRequest
-            {
-                Path = RequestTokenPath
-            };
-
-            var response = client.Request(request);
+            var request = new RestRequest(RequestTokenPath);
+            var response = client.Get(request);
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
@@ -78,7 +63,7 @@ namespace F1PCO.Integration.PCO
                 return requestToken;
             }
 
-            throw new Exception("An error occured: Status code: " + response.StatusCode, response.InnerException);
+            throw new Exception("An error occured: Status code: " + response.StatusCode, response.ErrorException);
         }
 
         public AccessToken GetAccessToken(RequestToken requestToken, string verifier = null)
@@ -90,29 +75,12 @@ namespace F1PCO.Integration.PCO
                 throw new Exception("There was no oauth_verifier parameter on the callback request.");
 
             var client =
-                new RestClient
-                    {
-                        Authority = _apiBaseUrl,
-                        Credentials =
-                            new OAuthCredentials
-                                {
-                                    Type = OAuthType.AccessToken,
-                                    SignatureMethod = OAuthSignatureMethod.HmacSha1,
-                                    ParameterHandling = OAuthParameterHandling.HttpAuthorizationHeader,
-                                    ConsumerKey = _consumerKey,
-                                    ConsumerSecret = _consumerSecret,
-                                    Token = requestToken.Value,
-                                    TokenSecret = requestToken.Secret,
-                                    Verifier = verifier
-                                }
-                    };
-
-            var request = new RestRequest
-            {
-                Path = AccessTokenPath
-            };
-
-            var response = client.Request(request);
+                new RestClient(_apiBaseUrl)
+                {
+                    Authenticator = OAuth1Authenticator.ForAccessToken(_consumerKey, _consumerSecret, requestToken.Value, requestToken.Secret, verifier)
+                };
+            var request = new RestRequest(AccessTokenPath);
+            var response = client.Get(request);
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
@@ -121,7 +89,7 @@ namespace F1PCO.Integration.PCO
                 return accessToken;
             }
 
-            throw new Exception("An error occured: Status code: " + response.StatusCode, response.InnerException);
+            throw new Exception("An error occured: Status code: " + response.StatusCode, response.ErrorException);
         }
     }
 }

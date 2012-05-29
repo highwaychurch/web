@@ -1,17 +1,16 @@
 using System;
 using System.Net;
-using System.Threading.Tasks;
 using System.Web;
 using F1PCO.OAuth;
-using Hammock;
-using Hammock.Authentication.OAuth;
+using RestSharp;
+using RestSharp.Authenticators;
 
 namespace F1PCO.Integration.F1
 {
     public class F1AuthorizationService : IF1AuthorizationService
     {
-        private const string RequestTokenPath = "Tokens/RequestToken";
-        private const string AccessTokenPath = "Tokens/AccessToken";
+        private const string RequestTokenPath = "v1/Tokens/RequestToken";
+        private const string AccessTokenPath = "v1/Tokens/AccessToken";
         private const string PortalUserAuthorizePath = "v1/PortalUser/Login";
         private readonly string _consumerKey;
         private readonly string _consumerSecret;
@@ -42,28 +41,13 @@ namespace F1PCO.Integration.F1
         public RequestToken GetRequestToken(string callbackUrl)
         {
             var client =
-                new RestClient
+                new RestClient(_apiBaseUrl)
                     {
-                        Authority = _apiBaseUrl,
-                        VersionPath = "v1",
-                        Credentials =
-                            new OAuthCredentials
-                                {
-                                    Type = OAuthType.RequestToken,
-                                    SignatureMethod = OAuthSignatureMethod.HmacSha1,
-                                    ParameterHandling = OAuthParameterHandling.HttpAuthorizationHeader,
-                                    ConsumerKey = _consumerKey,
-                                    ConsumerSecret = _consumerSecret,
-                                    CallbackUrl = callbackUrl
-                                }
+                        Authenticator = OAuth1Authenticator.ForRequestToken(_consumerKey, _consumerSecret, callbackUrl)
                     };
 
-            var request = new RestRequest
-            {
-                Path = RequestTokenPath
-            };
-
-            var response = client.Request(request);
+            var request = new RestRequest(RequestTokenPath);
+            var response = client.Get(request);
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
@@ -72,7 +56,7 @@ namespace F1PCO.Integration.F1
                 return requestToken;
             }
 
-            throw new Exception("An error occured: Status code: " + response.StatusCode, response.InnerException);
+            throw new Exception("An error occured: Status code: " + response.StatusCode, response.ErrorException);
         }
 
         public string BuildPortalUserAuthorizationRequestUrl(RequestToken requestToken, string callbackUrl)
@@ -88,29 +72,12 @@ namespace F1PCO.Integration.F1
             if (requestToken == null) throw new InvalidOperationException("Cannot get an Access token until you have the Request token.");
 
             var client =
-                new RestClient
+                new RestClient(_apiBaseUrl)
                     {
-                        Authority = _apiBaseUrl,
-                        VersionPath = "v1",
-                        Credentials =
-                            new OAuthCredentials
-                                {
-                                    Type = OAuthType.AccessToken,
-                                    SignatureMethod = OAuthSignatureMethod.HmacSha1,
-                                    ParameterHandling = OAuthParameterHandling.HttpAuthorizationHeader,
-                                    ConsumerKey = _consumerKey,
-                                    ConsumerSecret = _consumerSecret,
-                                    Token = requestToken.Value,
-                                    TokenSecret = requestToken.Secret
-                                }
+                        Authenticator = OAuth1Authenticator.ForAccessToken(_consumerKey, _consumerSecret, requestToken.Value, requestToken.Secret)
                     };
-
-            var request = new RestRequest
-            {
-                Path = AccessTokenPath
-            };
-
-            var response = client.Request(request);
+            var request = new RestRequest(AccessTokenPath);
+            var response = client.Get(request);
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
@@ -119,7 +86,7 @@ namespace F1PCO.Integration.F1
                 return accessToken;
             }
 
-            throw new Exception("An error occured: Status code: " + response.StatusCode, response.InnerException);
+            throw new Exception("An error occured: Status code: " + response.StatusCode, response.ErrorException);
         }
     }
 }
