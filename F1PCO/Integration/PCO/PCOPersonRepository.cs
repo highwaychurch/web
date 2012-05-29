@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Xml.Linq;
-using Hammock;
+using RestSharp;
 
 namespace F1PCO.Integration.PCO
 {
@@ -18,42 +18,29 @@ namespace F1PCO.Integration.PCO
 
         public IEnumerable<PCOPerson> GetPeople()
         {
-            var request = new RestRequest
+            var request = new RestRequest("people.xml");
+            var response = _clientProvider.GetRestClient().Execute(request);
+            if (response.StatusCode == HttpStatusCode.OK)
             {
-                Path = "people.xml",
-            };
-
-            using (var response = _clientProvider.GetRestClient().Request(request))
-            {
-                if (response.StatusCode == HttpStatusCode.OK)
-                {
-                    var people = GetPCOPeopleFromXml(response.Content);
-                    return people;
-                }
-
-                throw new Exception("An error occured: Status code: " + response.StatusCode, response.InnerException);
+                var people = GetPCOPeopleFromXml(response.Content);
+                return people;
             }
+
+            throw new Exception("An error occured: Status code: " + response.StatusCode, response.ErrorException);
         }
 
         public IEnumerable<PCOPerson> SearchByName(string searchTerm)
         {
-            var request = new RestRequest
-            {
-                Path = "people.xml",
-            };
-
+            var request = new RestRequest("people.xml");
             request.AddParameter("name", searchTerm);
-
-            using (var response = _clientProvider.GetRestClient().Request(request))
+            var response = _clientProvider.GetRestClient().Execute(request);
+            if (response.StatusCode == HttpStatusCode.OK)
             {
-                if (response.StatusCode == HttpStatusCode.OK)
-                {
-                    var people = GetPCOPeopleFromXml(response.Content);
-                    return people;
-                }
-
-                throw new Exception("An error occured: Status code: " + response.StatusCode, response.InnerException);
+                var people = GetPCOPeopleFromXml(response.Content);
+                return people;
             }
+
+            throw new Exception("An error occured: Status code: " + response.StatusCode, response.ErrorException);
         }
 
         private static IEnumerable<PCOPerson> GetPCOPeopleFromXml(string xml)
