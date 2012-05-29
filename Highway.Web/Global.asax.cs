@@ -12,6 +12,7 @@ using Autofac.Integration.Mvc;
 using Highway.Shared.Diagnostics;
 using Highway.Shared.Mvc;
 using Highway.Shared.Mvc.Validation;
+using Highway.Web.App.Modules;
 
 namespace Highway.Web
 {
@@ -92,8 +93,8 @@ namespace Highway.Web
 
             // Build the container
             var builder = new ContainerBuilder();
-            builder.RegisterModule<App.Modules.MvcModule>();
-            builder.RegisterModule<App.Modules.PersistenceModule>();
+            builder.RegisterModule(new MvcModule());
+            builder.RegisterModule<PersistenceModule>();
             builder.RegisterModule<SecurityModule>();
             builder.RegisterModule<DiagnosticsModule>();
             builder.RegisterModule<TimeModule>();

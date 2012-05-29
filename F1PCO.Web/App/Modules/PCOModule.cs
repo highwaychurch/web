@@ -1,4 +1,5 @@
 using Autofac;
+using Autofac.Integration.Mvc;
 using F1PCO.Integration.PCO;
 
 namespace F1PCO.Web.App.Modules
@@ -16,14 +17,17 @@ namespace F1PCO.Web.App.Modules
             builder.RegisterType<PCOAuthorizationService>().As<IPCOAuthorizationService>()
                 .WithParameter("apiBaseUrl", ApiBaseUrl)
                 .WithParameter("consumerKey", ConsumerKey)
-                .WithParameter("consumerSecret", ConsumerSecret);
+                .WithParameter("consumerSecret", ConsumerSecret)
+                .InstancePerHttpRequest();
 
             builder.RegisterType<PCOClientProvider>().As<IPCOClientProvider>()
                 .WithParameter("consumerKey", ConsumerKey)
                 .WithParameter("consumerSecret", ConsumerSecret)
-                .WithParameter("apiBaseUrl", ApiBaseUrl);
+                .WithParameter("apiBaseUrl", ApiBaseUrl)
+                .InstancePerHttpRequest();
 
-            builder.RegisterType<PCOPersonRepository>().As<IPCOPersonRepository>();
+            builder.RegisterType<PCOPersonRepository>().As<IPCOPersonRepository>()
+                .InstancePerHttpRequest();
         }
     }
 }

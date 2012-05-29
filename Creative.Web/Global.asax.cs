@@ -9,6 +9,7 @@ using System.Web.Routing;
 using Autofac;
 using Autofac.Configuration;
 using Autofac.Integration.Mvc;
+using Creative.Web.App.Modules;
 using Highway.Shared.Diagnostics;
 using Highway.Shared.Mvc;
 using Highway.Shared.Mvc.Validation;
@@ -92,8 +93,8 @@ namespace Creative.Web
 
             // Build the container
             var builder = new ContainerBuilder();
-            builder.RegisterModule<App.Modules.MvcModule>();
-            builder.RegisterModule<App.Modules.PersistenceModule>();
+            builder.RegisterModule(new MvcModule());
+            builder.RegisterModule<PersistenceModule>();
             builder.RegisterModule<SecurityModule>();
             builder.RegisterModule<DiagnosticsModule>();
             builder.RegisterModule<TimeModule>();

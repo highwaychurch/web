@@ -13,19 +13,19 @@ namespace Highway.Shared.Mvc.ActionResults
             var serializer = new JavaScriptSerializer();
 
             response.ContentEncoding = ContentEncoding ?? response.ContentEncoding;
-            response.ContentType = !String.IsNullOrEmpty(ContentType) 
-                ? ContentType 
-                : "application/javascript";
-            
+            response.ContentType = !String.IsNullOrEmpty(ContentType)
+                                       ? ContentType
+                                       : "application/javascript";
+
             if (Data == null) return;
 
-            if(string.IsNullOrEmpty(request.Params["callback"]))
+            if (string.IsNullOrEmpty(request.Params["callback"]))
             {
-                response.Write(serializer.Serialize(Data));    
+                response.Write(serializer.Serialize(Data));
             }
-            else 
+            else
             {
-                response.Write(request.Params["callback"] + "(" + serializer.Serialize(Data) + ")");    
+                response.Write(request.Params["callback"] + "(" + serializer.Serialize(Data) + ")");
             }
         }
     }

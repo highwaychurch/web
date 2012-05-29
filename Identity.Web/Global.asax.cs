@@ -80,8 +80,8 @@ namespace Highway.Identity.Web
             var builder = new ContainerBuilder();
             builder.RegisterModule<WindowsIdentityFoundationModule>();
             builder.RegisterModule<IdentityServerModule>();
-            builder.RegisterModule<App.Modules.MvcModule>();
-            builder.RegisterModule<App.Modules.PersistenceModule>();
+            builder.RegisterModule(new MvcModule());
+            builder.RegisterModule<PersistenceModule>();
             builder.RegisterModule<SecurityModule>();
             builder.RegisterModule<DiagnosticsModule>();
             builder.RegisterModule<TimeModule>();

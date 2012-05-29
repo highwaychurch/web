@@ -159,7 +159,6 @@
     <Compile Include="App\Modules\IdentityServerModule.cs" />
     <Compile Include="App\Modules\WindowsIdentityFoundationModule.cs" />
     <Compile Include="App\Modules\PersistenceModule.cs" />
-    <Compile Include="App\Modules\MvcModule.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\Admin\AdminController.cs" />
     <Compile Include="Controllers\Admin\ClientCertificatesAdminController.cs" />

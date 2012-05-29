@@ -1,5 +1,6 @@
 ﻿using System.Web.Mvc;
 using Autofac;
+using Autofac.Integration.Mvc;
 using Highway.Shared.Mvc.Persistence;
 using Highway.Shared.Persistence;
 
@@ -11,8 +12,8 @@ namespace Highway.Shared.Mvc
         {
             base.Load(builder);
 
-            builder.RegisterType<TransactedActionFilter>().As<IActionFilter>();
-            builder.RegisterType<TransactionScopeTransactionContext>().As<ITransactionContext>().InstancePerLifetimeScope();
+            builder.RegisterType<TransactedActionFilter>().As<IActionFilter>().InstancePerHttpRequest();
+            builder.RegisterType<TransactionScopeTransactionContext>().As<ITransactionContext>().InstancePerHttpRequest();
         }
     }
 }

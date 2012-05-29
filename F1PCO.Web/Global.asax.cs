@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Http.Formatting;
 using System.Reflection;
 using System.Threading;
 using System.Web;
@@ -10,6 +11,7 @@ using System.Web.Mvc;
 using System.Web.Routing;
 using Autofac;
 using Autofac.Integration.Mvc;
+using Autofac.Integration.WebApi;
 using F1PCO.Web.App.Modules;
 using Highway.Shared.Autofac;
 using Highway.Shared.Diagnostics;
@@ -22,7 +24,7 @@ namespace F1PCO.Web
     // Note: For instructions on enabling IIS6 or IIS7 classic mode, 
     // visit http://go.microsoft.com/?LinkId=9394801
 
-    public class MvcApplication : System.Web.HttpApplication
+    public class MvcApplication : HttpApplication
     {
 #if DEBUG
         public const bool IsDebug = true;
@@ -87,16 +89,17 @@ namespace F1PCO.Web
             routes.IgnoreRoute("{*favicon}", new { favicon = @"(.*/)?favicon.ico(/.*)?" });
             routes.IgnoreRoute("{*allaxd}", new { allaxd = @".*\.axd(/.*)?" });
 
-            routes.MapRoute(
-                "Default", // Route name
-                "{controller}/{action}/{id}", // URL with parameters
-                new { controller = "Home", action = "Index", id = UrlParameter.Optional } // Parameter defaults
-            );
-        
+            // Ensure the WebApi route is first so the MVC route doesn't 404 us on a missing "api" controller
             routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
+                );
+
+            routes.MapRoute(
+                name: "Default",
+                url: "{controller}/{action}/{id}",
+                defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
             );
         }
 
@@ -108,6 +111,7 @@ namespace F1PCO.Web
             var modules = new List<Module>
                               {
                                   new MvcModule(),
+                                  new WebApiModule(),
                                   new PersistenceModule(),
                                   new SecurityModule(),
                                   new DiagnosticsModule(),
@@ -119,15 +123,24 @@ namespace F1PCO.Web
             var builder = new ContainerBuilder();
             builder.RegisterModule(new ConfiguredModules(modules));
             _container = builder.Build();
-            DependencyResolver.SetResolver(new AutofacDependencyResolver(_container));
+
             _log = _container.Resolve<ILog<MvcApplication>>();
             _log.Information("Application_Start");
 
-            // And do all of the MVC stuff
-            AreaRegistration.RegisterAllAreas();
-            // We use JSON.NET instead
-            ValueProviderFactories.Factories.Remove(ValueProviderFactories.Factories.OfType<JsonValueProviderFactory>().First());
+            ConfigureMvc();
+            ConfigureWebApi();
+        }
 
+        private void ConfigureMvc()
+        {
+            // Register the container as the MVC DependencyResolver
+            DependencyResolver.SetResolver(new AutofacDependencyResolver(_container));
+
+            // Force JSON.NET instead
+            ValueProviderFactories.Factories.Remove(ValueProviderFactories.Factories.OfType<JsonValueProviderFactory>().Single());
+            ValueProviderFactories.Factories.Add(new JsonNetValueProviderFactory());
+
+            AreaRegistration.RegisterAllAreas();
             RegisterGlobalFilters(GlobalFilters.Filters);
             RegisterRoutes(RouteTable.Routes);
 
@@ -136,6 +149,15 @@ namespace F1PCO.Web
                 typeof(RequiredIfValidator));
         }
 
+        private void ConfigureWebApi()
+        {
+            // Register the container as the WebApi ServiceResolver
+            GlobalConfiguration.Configuration.ServiceResolver.SetResolver(new AutofacWebApiDependencyResolver(_container));
+
+            // Force JSON.NET instead
+            GlobalConfiguration.Configuration.Formatters.Remove(GlobalConfiguration.Configuration.Formatters.OfType<JsonMediaTypeFormatter>().Single());
+            GlobalConfiguration.Configuration.Formatters.Insert(0, new JsonNetFormatter());
+        }
 
         protected void Application_End()
         {

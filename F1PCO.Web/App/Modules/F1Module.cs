@@ -1,4 +1,5 @@
 using Autofac;
+using Autofac.Integration.Mvc;
 using F1PCO.Integration.F1;
 
 namespace F1PCO.Web.App.Modules
@@ -18,16 +19,16 @@ namespace F1PCO.Web.App.Modules
                 .WithParameter("apiBaseUrl", GetApiBaseUrl())
                 .WithParameter("consumerKey", ConsumerKey)
                 .WithParameter("consumerSecret", ConsumerSecret)
-                .InstancePerLifetimeScope();
+                .InstancePerHttpRequest();
 
             builder.RegisterType<F1ClientProvider>().As<IF1ClientProvider>()
                 .WithParameter("apiBaseUrl", GetApiBaseUrl())
                 .WithParameter("consumerKey", ConsumerKey)
                 .WithParameter("consumerSecret", ConsumerSecret)
-                .InstancePerLifetimeScope();
+                .InstancePerHttpRequest();
 
             builder.RegisterType<F1PersonRepository>().As<IF1PersonRepository>()
-                .InstancePerLifetimeScope();
+                .InstancePerHttpRequest();
         }
 
         private string GetApiBaseUrl()
