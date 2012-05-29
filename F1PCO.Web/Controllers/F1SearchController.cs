@@ -13,9 +13,9 @@ namespace F1PCO.Web.Controllers
             _f1PersonRepository = f1PersonRepository;
         }
 
-        public IEnumerable<F1Person> GetPeople()
+        public IEnumerable<F1Person> GetPeople(string searchTerm)
         {
-            return _f1PersonRepository.SearchByName("michael");
+            return _f1PersonRepository.SearchByName(searchTerm);
         }
     }
 }

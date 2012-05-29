@@ -192,10 +192,6 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\F1People\SearchByNameViewModel.cs" />
-    <Compile Include="ViewModels\PCOPeople\IndexViewModel.cs" />
-    <Compile Include="ViewModels\PCOPeople\PersonMergeViewModel.cs" />
-    <Compile Include="ViewModels\F1People\IndexViewModel.cs" />
-    <Compile Include="ViewModels\F1People\PersonMergeViewModel.cs" />
     <Compile Include="ViewModels\PCOPeople\SearchByNameViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -318,10 +314,6 @@
     <Content Include="bootstrap\less\wells.less" />
     <None Include="bootstrap\LICENSE" />
     <Content Include="Views\Shared\_LogOnPartial.cshtml" />
-    <Content Include="Views\F1People\Index.cshtml" />
-    <Content Include="Views\F1People\ExistingPeople.cshtml" />
-    <Content Include="Views\PCOPeople\ExistingPeople.cshtml" />
-    <Content Include="Views\PCOPeople\Index.cshtml" />
     <Content Include="Views\Home\Ready.cshtml" />
     <Content Include="Views\F1People\SearchByName.cshtml" />
     <Content Include="Views\PCOPeople\SearchByName.cshtml" />

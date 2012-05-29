@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
-using Hammock;
 using Newtonsoft.Json.Linq;
+using RestSharp;
 
 namespace F1PCO.Integration.F1
 {
@@ -23,16 +23,13 @@ namespace F1PCO.Integration.F1
             if (maxResults > 100)
                 throw new ArgumentOutOfRangeException("maxResults", maxResults, "maxResults should be less than 100");
 
-            var request = new RestRequest
-            {
-                Path = "People/Search",
-            };
-
+            var request = new RestRequest("v1/People/Search");
+            request.AddHeader("content-type", V2JsonAPIContentType);
             request.AddParameter("searchFor", searchTerm);
             request.AddParameter("recordsperpage", maxResults.ToString());
             request.AddParameter("include", "attributes,addresses");
 
-            using (var response = _clientProvider.GetRestClient(V2JsonAPIContentType).Request(request))
+            var response = _clientProvider.GetRestClient().Execute(request);
             {
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
@@ -40,7 +37,7 @@ namespace F1PCO.Integration.F1
                     return people;
                 }
 
-                throw new Exception("An error occured: Status code: " + response.StatusCode, response.InnerException);
+                throw new Exception("An error occured: Status code: " + response.StatusCode, response.ErrorException);
             }
         }
 
@@ -51,7 +48,7 @@ namespace F1PCO.Integration.F1
 
             foreach (var p in people.results.person)
             {
-                var person = new F1Person
+                yield return new F1Person
                 {
                     F1ID = p["@id"],
                     FirstName = p.firstName,
@@ -59,7 +56,6 @@ namespace F1PCO.Integration.F1
                     Gender = p.gender,
                     DateOfBirth = (DateTime?)p.dateOfBirth
                 };
-                yield return person;
             }
         }
     }

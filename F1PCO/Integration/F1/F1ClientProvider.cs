@@ -1,8 +1,8 @@
 using System;
 using System.Linq;
-using Hammock;
-using Hammock.Authentication.OAuth;
 using Raven.Client;
+using RestSharp;
+using RestSharp.Authenticators;
 
 namespace F1PCO.Integration.F1
 {
@@ -21,44 +21,19 @@ namespace F1PCO.Integration.F1
             _consumerSecret = consumerSecret;
         }
 
-        public IRestClient GetRestClient(string contentType = null)
-        {
-            var client =
-                new RestClient
-                       {
-                           Authority = _apiBaseUrl,
-                           VersionPath = "v1",
-                           Credentials = GetAccessTokenCredentials(),
-                       };
-            if (string.IsNullOrWhiteSpace(contentType) == false)
-            {
-                client.AddHeader("content-type", contentType);
-            }
-
-            return client;
-        }
-
-        public OAuthCredentials GetAccessTokenCredentials()
+        public IRestClient GetRestClient()
         {
             var user = _session.Query<User>().FirstOrDefault();
             if (user == null)
                 throw new InvalidOperationException("There is no current user.");
 
-            if (user.F1AccessToken != null)
-            {
-                return new OAuthCredentials
-                           {
-                               Type = OAuthType.AccessToken,
-                               SignatureMethod = OAuthSignatureMethod.HmacSha1,
-                               ParameterHandling = OAuthParameterHandling.HttpAuthorizationHeader,
-                               ConsumerKey = _consumerKey,
-                               ConsumerSecret = _consumerSecret,
-                               Token = user.F1AccessToken.Value,
-                               TokenSecret = user.F1AccessToken.Secret
-                           };
-            }
+            var client =
+                new RestClient(_apiBaseUrl)
+                    {
+                        Authenticator = OAuth1Authenticator.ForProtectedResource(_consumerKey, _consumerSecret, user.F1AccessToken.Value, user.F1AccessToken.Secret)
+                    };
 
-            return null;
+            return client;
         }
     }
 }
