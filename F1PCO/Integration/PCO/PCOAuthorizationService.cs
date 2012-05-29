@@ -66,7 +66,7 @@ namespace F1PCO.Integration.PCO
             throw new Exception("An error occured: Status code: " + response.StatusCode, response.ErrorException);
         }
 
-        public AccessToken GetAccessToken(RequestToken requestToken, string verifier = null)
+        public AccessToken GetAccessToken(RequestToken requestToken, string verifier)
         {
             if (requestToken == null) throw new InvalidOperationException("Cannot get the Access token without a Request token.");
             if (verifier == null) throw new InvalidOperationException("Cannot get the Access token without a verifer");
