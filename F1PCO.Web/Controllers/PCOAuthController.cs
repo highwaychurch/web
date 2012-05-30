@@ -5,8 +5,8 @@ using System.Web.Mvc;
 using F1PCO.Integration.PCO;
 using F1PCO.OAuth;
 using Highway.Shared.Mvc;
-using Highway.Shared.Persistence;
 using Raven.Client;
+using Raven.Client.Linq;
 
 namespace F1PCO.Web.Controllers
 {
@@ -14,21 +14,20 @@ namespace F1PCO.Web.Controllers
     {
         private const string PCORequestTokenCookieKey = "PCORequestToken";
         private readonly IPCOAuthorizationService _pcoAuthorizationService;
-        private readonly IDocumentSession _session;
+        private readonly IAsyncDocumentSession _asyncSession;
 
-        public PCOAuthController(IPCOAuthorizationService pcoAuthorizationService, IDocumentSession session)
+        public PCOAuthController(IPCOAuthorizationService pcoAuthorizationService, IAsyncDocumentSession asyncSession)
         {
             _pcoAuthorizationService = pcoAuthorizationService;
-            _session = session;
+            _asyncSession = asyncSession;
         }
 
-        [NoTransaction]
         public async Task<ActionResult> Authenticate()
         {
             // Remove when MVC 4 is released (http://forums.asp.net/p/1778103/4880898.aspx/1?Re+Using+an+Async+Action+to+Run+Synchronous+Code)
             await Task.Yield();
 
-            var user = _session.Query<User>().FirstOrDefault();
+            var user = (await _asyncSession.Query<User>().Take(1).ToListAsync()).Single();
             if (user == null) throw new InvalidOperationException("There is no current user!");
 
             if (user.PCOAccessToken != null)
@@ -48,13 +47,12 @@ namespace F1PCO.Web.Controllers
             return Redirect(oauthRedirect);
         }
 
-        [NoTransaction]
         public async Task<ActionResult> CallBack(string oauth_verifier)
         {
             // Remove when MVC 4 is released (http://forums.asp.net/p/1778103/4880898.aspx/1?Re+Using+an+Async+Action+to+Run+Synchronous+Code)
             await Task.Yield();
-            
-            var user = _session.Query<User>().FirstOrDefault();
+
+            var user = (await _asyncSession.Query<User>().Take(1).ToListAsync()).Single();
             if (user == null) throw new InvalidOperationException("There is no current user!");
 
             RequestToken requestToken;
@@ -62,8 +60,8 @@ namespace F1PCO.Web.Controllers
                 throw new InvalidOperationException("The RequestToken could not be retrieved from the cookie.");
 
             var accessToken = await _pcoAuthorizationService.GetAccessTokenAsync(requestToken, oauth_verifier);
-
             user.PCOAccessToken = accessToken;
+            Response.Cookies.Expire(PCORequestTokenCookieKey);
 
             return RedirectToAction("Ready", "Home");
         }

@@ -71,9 +71,6 @@
     <Compile Include="Exceptions\ExceptionExtensions.cs" />
     <Compile Include="Guard.cs" />
     <Compile Include="Autofac\ConfiguredModule.cs" />
-    <Compile Include="Persistence\ITransactionContext.cs" />
-    <Compile Include="Persistence\NoTransactionAttribute.cs" />
-    <Compile Include="Persistence\TransactionScopeTransactionContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Property.cs" />
     <Compile Include="RestSharp\RestSharpExtensions.cs" />

@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using F1PCO.Integration.PCO;
 using F1PCO.Web.ViewModels.PCOPeople;
-using Highway.Shared.Persistence;
 
 namespace F1PCO.Web.Controllers
 {
@@ -16,7 +15,6 @@ namespace F1PCO.Web.Controllers
             _pcoPersonRepository = pcoPersonRepository;
         }
 
-        [NoTransaction]
         public async Task<ActionResult> SearchByName(string searchTerm)
         {
             // Remove when MVC 4 is released (http://forums.asp.net/p/1778103/4880898.aspx/1?Re+Using+an+Async+Action+to+Run+Synchronous+Code)

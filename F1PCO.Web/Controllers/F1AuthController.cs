@@ -5,8 +5,8 @@ using System.Web.Mvc;
 using F1PCO.Integration.F1;
 using F1PCO.OAuth;
 using Highway.Shared.Mvc;
-using Highway.Shared.Persistence;
 using Raven.Client;
+using Raven.Client.Linq;
 
 namespace F1PCO.Web.Controllers
 {
@@ -14,21 +14,20 @@ namespace F1PCO.Web.Controllers
     {
         private const string F1RequestTokenCookieKey = "F1RequestToken";
         private readonly IF1AuthorizationService _f1AuthorizationService;
-        private readonly IDocumentSession _session;
+        private readonly IAsyncDocumentSession _asyncSession;
 
-        public F1AuthController(IF1AuthorizationService f1AuthorizationService, IDocumentSession session)
+        public F1AuthController(IF1AuthorizationService f1AuthorizationService, IAsyncDocumentSession asyncSession)
         {
             _f1AuthorizationService = f1AuthorizationService;
-            _session = session;
+            _asyncSession = asyncSession;
         }
 
-        [NoTransaction]
         public async Task<ActionResult> Authenticate()
         {
             // Remove when MVC 4 is released (http://forums.asp.net/p/1778103/4880898.aspx/1?Re+Using+an+Async+Action+to+Run+Synchronous+Code)
             await Task.Yield();
 
-            var user = _session.Query<User>().FirstOrDefault();
+            var user = (await _asyncSession.Query<User>().Take(1).ToListAsync()).Single();
             if (user == null) throw new InvalidOperationException("There is no current user!");
 
             if (user.F1AccessToken != null)
@@ -39,7 +38,7 @@ namespace F1PCO.Web.Controllers
                     return RedirectToAction("Authenticate", "PCOAuth");
                 }
             }
-           
+
             // Otherwise start the OAuth dance with F1
             var callbackUrl = Url.Action("CallBack", "F1Auth", null, Request.Url.Scheme);
             var requestToken = await _f1AuthorizationService.GetRequestTokenAsync(callbackUrl);
@@ -48,13 +47,12 @@ namespace F1PCO.Web.Controllers
             return Redirect(oauthRedirect);
         }
 
-        [NoTransaction]
         public async Task<ActionResult> CallBack()
         {
             // Remove when MVC 4 is released (http://forums.asp.net/p/1778103/4880898.aspx/1?Re+Using+an+Async+Action+to+Run+Synchronous+Code)
             await Task.Yield();
 
-            var user = _session.Query<User>().FirstOrDefault();
+            var user = (await _asyncSession.Query<User>().Take(1).ToListAsync()).FirstOrDefault();
             if (user == null) throw new InvalidOperationException("There is no current user!");
 
             RequestToken requestToken;
@@ -62,8 +60,8 @@ namespace F1PCO.Web.Controllers
                 throw new InvalidOperationException("The RequestToken could not be retrieved from the cookie.");
 
             var accessToken = await _f1AuthorizationService.GetAccessTokenAsync(requestToken);
-
             user.F1AccessToken = accessToken;
+            Response.Cookies.Expire(F1RequestTokenCookieKey);
 
             return RedirectToAction("Authenticate", "PCOAuth");
         }
