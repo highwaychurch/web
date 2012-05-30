@@ -1,5 +1,6 @@
 using System;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web;
 using F1PCO.OAuth;
 using RestSharp;
@@ -25,11 +26,11 @@ namespace F1PCO.Integration.F1
             _testRepository = testRepository;
         }
 
-        public bool TryConnectWithPersistedAccessToken(AccessToken persistedAccessToken)
+        public async Task<bool> TryConnectWithPersistedAccessTokenAsync(AccessToken persistedAccessToken)
         {
             try
             {
-                _testRepository.Value.SearchByNameAsync("TEST", 1);
+                await _testRepository.Value.SearchByNameAsync("TEST", 1);
                 return true;
             }
             catch

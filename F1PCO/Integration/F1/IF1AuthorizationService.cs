@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using F1PCO.OAuth;
 
 namespace F1PCO.Integration.F1
@@ -6,7 +7,7 @@ namespace F1PCO.Integration.F1
     {
         RequestToken GetRequestToken(string callbackUrl);
         AccessToken GetAccessToken(RequestToken requestToken);
-        bool TryConnectWithPersistedAccessToken(AccessToken persistedAccessToken);
+        Task<bool> TryConnectWithPersistedAccessTokenAsync(AccessToken persistedAccessToken);
         string BuildPortalUserAuthorizationRequestUrl(RequestToken requestToken, string callbackUrl);
     }
 }
