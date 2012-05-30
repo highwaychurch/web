@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Web.Http;
 using F1PCO.Integration.F1;
 
@@ -13,9 +14,9 @@ namespace F1PCO.Web.Controllers
             _f1PersonRepository = f1PersonRepository;
         }
 
-        public IEnumerable<F1Person> GetPeople(string searchTerm)
+        public async Task<IEnumerable<F1Person>> GetPeople(string searchTerm)
         {
-            return _f1PersonRepository.SearchByName(searchTerm);
+            return await _f1PersonRepository.SearchByNameAsync(searchTerm);
         }
     }
 }

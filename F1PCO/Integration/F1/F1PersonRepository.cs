@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Threading.Tasks;
+using Highway.Shared.RestSharp;
 using Newtonsoft.Json.Linq;
 using RestSharp;
 
@@ -16,7 +18,7 @@ namespace F1PCO.Integration.F1
             _clientProvider = clientProvider;
         }
 
-        public IEnumerable<F1Person> SearchByName(string searchTerm, int maxResults = 10)
+        public async Task<IEnumerable<F1Person>> SearchByNameAsync(string searchTerm, int maxResults = 10)
         {
             if (string.IsNullOrWhiteSpace(searchTerm))
                 throw new ArgumentException("searchTerm cannot be blank", "searchTerm");
@@ -29,7 +31,7 @@ namespace F1PCO.Integration.F1
             request.AddParameter("recordsperpage", maxResults.ToString());
             request.AddParameter("include", "attributes,addresses");
 
-            var response = _clientProvider.GetRestClient().Execute(request);
+            var response = await _clientProvider.GetRestClient().ExecuteAsync(request);
             {
                 if (response.StatusCode == HttpStatusCode.OK)
                 {

@@ -29,7 +29,7 @@ namespace F1PCO.Integration.F1
         {
             try
             {
-                _testRepository.Value.SearchByName("TEST", 1);
+                _testRepository.Value.SearchByNameAsync("TEST", 1);
                 return true;
             }
             catch
