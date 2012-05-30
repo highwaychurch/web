@@ -83,6 +83,7 @@ namespace F1PCO.Web
 
         public static void RegisterRoutes(RouteCollection routes)
         {
+            routes.IgnoreRoute("cachedassets/{*path}");
             routes.IgnoreRoute("Content/{*path}");
             routes.IgnoreRoute("Scripts/{*path}");
             routes.IgnoreRoute("bootstrap/{*path}");
