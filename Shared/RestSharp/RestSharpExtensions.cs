@@ -1,7 +1,6 @@
 using System.Threading.Tasks;
-using RestSharp;
 
-namespace Highway.Shared.RestSharp
+namespace RestSharp
 {
     public static class RestSharpExtensions
     {

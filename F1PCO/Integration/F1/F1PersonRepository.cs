@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
-using Highway.Shared.RestSharp;
 using Newtonsoft.Json.Linq;
 using RestSharp;
 

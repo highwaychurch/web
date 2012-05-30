@@ -1,10 +1,10 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace F1PCO.Integration.PCO
 {
     public interface IPCOPersonRepository
     {
-        IEnumerable<PCOPerson> GetPeople();
-        IEnumerable<PCOPerson> SearchByName(string searchTerm);
+        Task<IEnumerable<PCOPerson>> SearchByNameAsync(string searchTerm);
     }
 }

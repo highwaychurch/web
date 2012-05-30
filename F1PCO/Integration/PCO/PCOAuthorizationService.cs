@@ -1,5 +1,6 @@
 using System;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web;
 using F1PCO.OAuth;
 using RestSharp;
@@ -25,11 +26,11 @@ namespace F1PCO.Integration.PCO
             _testRepository = testRepository;
         }
 
-        public bool TryConnectWithPersistedAccessToken(AccessToken persistedAccessToken)
+        public async Task<bool> TryConnectWithPersistedAccessTokenAsync(AccessToken persistedAccessToken)
         {
             try
             {
-                _testRepository.Value.GetPeople();
+                await _testRepository.Value.SearchByNameAsync("TEST");
                 return true;
             }
             catch
@@ -46,7 +47,7 @@ namespace F1PCO.Integration.PCO
             return builder.ToString();
         }
 
-        public RequestToken GetRequestToken(string callbackUrl)
+        public async Task<RequestToken> GetRequestTokenAsync(string callbackUrl)
         {
             var client =
                 new RestClient(_apiBaseUrl)
@@ -54,7 +55,7 @@ namespace F1PCO.Integration.PCO
                         Authenticator = OAuth1Authenticator.ForRequestToken(_consumerKey, _consumerSecret, callbackUrl)
                     };
             var request = new RestRequest(RequestTokenPath);
-            var response = client.Get(request);
+            var response = await client.ExecuteAsync(request);
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
@@ -66,7 +67,7 @@ namespace F1PCO.Integration.PCO
             throw new Exception("An error occured: Status code: " + response.StatusCode, response.ErrorException);
         }
 
-        public AccessToken GetAccessToken(RequestToken requestToken, string verifier)
+        public async Task<AccessToken> GetAccessTokenAsync(RequestToken requestToken, string verifier)
         {
             if (requestToken == null) throw new InvalidOperationException("Cannot get the Access token without a Request token.");
             if (verifier == null) throw new InvalidOperationException("Cannot get the Access token without a verifer");
@@ -80,7 +81,7 @@ namespace F1PCO.Integration.PCO
                     Authenticator = OAuth1Authenticator.ForAccessToken(_consumerKey, _consumerSecret, requestToken.Value, requestToken.Secret, verifier)
                 };
             var request = new RestRequest(AccessTokenPath);
-            var response = client.Get(request);
+            var response = await client.ExecuteAsync(request);
 
             if (response.StatusCode == HttpStatusCode.OK)
             {

@@ -39,7 +39,7 @@ namespace F1PCO.Integration.F1
             }
         }
 
-        public RequestToken GetRequestToken(string callbackUrl)
+        public async Task<RequestToken> GetRequestTokenAsync(string callbackUrl)
         {
             var client =
                 new RestClient(_apiBaseUrl)
@@ -48,7 +48,7 @@ namespace F1PCO.Integration.F1
                     };
 
             var request = new RestRequest(RequestTokenPath);
-            var response = client.Get(request);
+            var response = await client.ExecuteAsync(request);
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
@@ -68,7 +68,7 @@ namespace F1PCO.Integration.F1
             return builder.ToString();
         }
 
-        public AccessToken GetAccessToken(RequestToken requestToken)
+        public async Task<AccessToken> GetAccessTokenAsync(RequestToken requestToken)
         {
             if (requestToken == null) throw new InvalidOperationException("Cannot get an Access token until you have the Request token.");
 
@@ -78,7 +78,7 @@ namespace F1PCO.Integration.F1
                         Authenticator = OAuth1Authenticator.ForAccessToken(_consumerKey, _consumerSecret, requestToken.Value, requestToken.Secret)
                     };
             var request = new RestRequest(AccessTokenPath);
-            var response = client.Get(request);
+            var response = await client.ExecuteAsync(request);
 
             if (response.StatusCode == HttpStatusCode.OK)
             {

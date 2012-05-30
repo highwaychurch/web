@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 using F1PCO.Integration.PCO;
 using F1PCO.OAuth;
 using Highway.Shared.Mvc;
+using Highway.Shared.Persistence;
 using Raven.Client;
 
 namespace F1PCO.Web.Controllers
 {
-    public class PCOAuthController : Controller
+    public class PCOAuthController : AsyncController
     {
         private const string PCORequestTokenCookieKey = "PCORequestToken";
         private readonly IPCOAuthorizationService _pcoAuthorizationService;
@@ -20,14 +22,18 @@ namespace F1PCO.Web.Controllers
             _session = session;
         }
 
-        public ActionResult Authenticate()
+        [NoTransaction]
+        public async Task<ActionResult> Authenticate()
         {
+            // Remove when MVC 4 is released (http://forums.asp.net/p/1778103/4880898.aspx/1?Re+Using+an+Async+Action+to+Run+Synchronous+Code)
+            await Task.Yield();
+
             var user = _session.Query<User>().FirstOrDefault();
             if (user == null) throw new InvalidOperationException("There is no current user!");
 
             if (user.PCOAccessToken != null)
             {
-                if (_pcoAuthorizationService.TryConnectWithPersistedAccessToken(user.PCOAccessToken))
+                if (await _pcoAuthorizationService.TryConnectWithPersistedAccessTokenAsync(user.PCOAccessToken))
                 {
                     // PCO is working with the persisted AccessToken so move on to Ready
                     return RedirectToAction("Ready", "Home");
@@ -36,14 +42,18 @@ namespace F1PCO.Web.Controllers
 
             // Otherwise start the OAuth dance with PCO
             var callbackUrl = Url.Action("CallBack", "PCOAuth", null, Request.Url.Scheme);
-            var requestToken = _pcoAuthorizationService.GetRequestToken(callbackUrl);
+            var requestToken = await _pcoAuthorizationService.GetRequestTokenAsync(callbackUrl);
             Response.Cookies.SaveToCookie(PCORequestTokenCookieKey, requestToken);
             var oauthRedirect = _pcoAuthorizationService.BuildAuthorizationRequestUrl(requestToken, callbackUrl);
             return Redirect(oauthRedirect);
         }
 
-        public ActionResult CallBack(string oauth_verifier)
+        [NoTransaction]
+        public async Task<ActionResult> CallBack(string oauth_verifier)
         {
+            // Remove when MVC 4 is released (http://forums.asp.net/p/1778103/4880898.aspx/1?Re+Using+an+Async+Action+to+Run+Synchronous+Code)
+            await Task.Yield();
+            
             var user = _session.Query<User>().FirstOrDefault();
             if (user == null) throw new InvalidOperationException("There is no current user!");
 
@@ -51,7 +61,7 @@ namespace F1PCO.Web.Controllers
             if (Request.Cookies.TryGetFromCookie(PCORequestTokenCookieKey, out requestToken) == false)
                 throw new InvalidOperationException("The RequestToken could not be retrieved from the cookie.");
 
-            var accessToken = _pcoAuthorizationService.GetAccessToken(requestToken, oauth_verifier);
+            var accessToken = await _pcoAuthorizationService.GetAccessTokenAsync(requestToken, oauth_verifier);
 
             user.PCOAccessToken = accessToken;
 

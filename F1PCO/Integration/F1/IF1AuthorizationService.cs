@@ -5,8 +5,8 @@ namespace F1PCO.Integration.F1
 {
     public interface IF1AuthorizationService
     {
-        RequestToken GetRequestToken(string callbackUrl);
-        AccessToken GetAccessToken(RequestToken requestToken);
+        Task<RequestToken> GetRequestTokenAsync(string callbackUrl);
+        Task<AccessToken> GetAccessTokenAsync(RequestToken requestToken);
         Task<bool> TryConnectWithPersistedAccessTokenAsync(AccessToken persistedAccessToken);
         string BuildPortalUserAuthorizationRequestUrl(RequestToken requestToken, string callbackUrl);
     }

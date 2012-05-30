@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 using RestSharp;
 
@@ -16,24 +17,11 @@ namespace F1PCO.Integration.PCO
             _clientProvider = clientProvider;
         }
 
-        public IEnumerable<PCOPerson> GetPeople()
-        {
-            var request = new RestRequest("people.xml");
-            var response = _clientProvider.GetRestClient().Execute(request);
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                var people = GetPCOPeopleFromXml(response.Content);
-                return people;
-            }
-
-            throw new Exception("An error occured: Status code: " + response.StatusCode, response.ErrorException);
-        }
-
-        public IEnumerable<PCOPerson> SearchByName(string searchTerm)
+        public async Task<IEnumerable<PCOPerson>> SearchByNameAsync(string searchTerm)
         {
             var request = new RestRequest("people.xml");
             request.AddParameter("name", searchTerm);
-            var response = _clientProvider.GetRestClient().Execute(request);
+            var response = await _clientProvider.GetRestClient().ExecuteAsync(request);
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 var people = GetPCOPeopleFromXml(response.Content);

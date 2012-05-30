@@ -42,14 +42,18 @@ namespace F1PCO.Web.Controllers
            
             // Otherwise start the OAuth dance with F1
             var callbackUrl = Url.Action("CallBack", "F1Auth", null, Request.Url.Scheme);
-            var requestToken = _f1AuthorizationService.GetRequestToken(callbackUrl);
+            var requestToken = await _f1AuthorizationService.GetRequestTokenAsync(callbackUrl);
             Response.Cookies.SaveToCookie(F1RequestTokenCookieKey, requestToken);
             var oauthRedirect = _f1AuthorizationService.BuildPortalUserAuthorizationRequestUrl(requestToken, callbackUrl);
             return Redirect(oauthRedirect);
         }
 
-        public ActionResult CallBack()
+        [NoTransaction]
+        public async Task<ActionResult> CallBack()
         {
+            // Remove when MVC 4 is released (http://forums.asp.net/p/1778103/4880898.aspx/1?Re+Using+an+Async+Action+to+Run+Synchronous+Code)
+            await Task.Yield();
+
             var user = _session.Query<User>().FirstOrDefault();
             if (user == null) throw new InvalidOperationException("There is no current user!");
 
@@ -57,7 +61,7 @@ namespace F1PCO.Web.Controllers
             if (Request.Cookies.TryGetFromCookie(F1RequestTokenCookieKey, out requestToken) == false)
                 throw new InvalidOperationException("The RequestToken could not be retrieved from the cookie.");
 
-            var accessToken = _f1AuthorizationService.GetAccessToken(requestToken);
+            var accessToken = await _f1AuthorizationService.GetAccessTokenAsync(requestToken);
 
             user.F1AccessToken = accessToken;
 
