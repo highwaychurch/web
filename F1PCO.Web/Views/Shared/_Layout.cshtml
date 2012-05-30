@@ -1,5 +1,4 @@
-﻿@using Highway.Shared.Mvc
-@using Highway.Shared.Mvc.FlashMessages
+﻿@using Highway.Shared.Mvc.FlashMessages
 <!doctype html>
 <!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
 <!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
@@ -40,7 +39,7 @@
         Create your own custom Modernizr build: www.modernizr.com/download/ -->
     @MvcHtmlString.Create(
         SquishIt.Framework.Bundle.JavaScript()
-            .Add("~/js/libs/modernizr-2.0.6-development-only.js")
+            .Add("~/Scripts/modernizr-2.5.3.js")
             .Render("~/cachedassets/modernizr_combined_#.js"))
     @RenderSection("HeadContent", required: false)
 </head>
@@ -57,7 +56,7 @@
                 <div class="nav-collapse">
                     <ul class="nav">
                         <li>@Html.ActionLink("home", "Index", "Home")</li>
-                        <li>@Html.ActionLink("search", "Index", "Search")</li>
+                        <li>@Html.ActionLink("search", "Search", "Home")</li>
                     </ul>
                     <ul class="nav pull-right">
                         <li>@Html.Partial("_LogOnPartial")</li>
@@ -108,9 +107,10 @@
     @* It is important to order the js files appropriately - jQuery first *@
     @MvcHtmlString.Create(
         SquishIt.Framework.Bundle.JavaScript()
-            .Add("~/js/libs/jquery-1.7.1.js")
-            .Add("~/js/libs/jquery.validate.js")
-            .Add("~/js/libs/jquery.validate.unobtrusive.js")
+            .Add("~/Scripts/jquery-1.7.2.js")
+            .Add("~/Scripts/jquery.validate.js")
+            .Add("~/Scripts/jquery.validate.unobtrusive.js")
+            .Add("~/Scripts/knockout-2.1.0.js")
             .Add("~/bootstrap/js/bootstrap-transition.js")
             .Add("~/bootstrap/js/bootstrap-alert.js")
             .Add("~/bootstrap/js/bootstrap-modal.js")

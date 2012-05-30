@@ -83,9 +83,8 @@ namespace F1PCO.Web
 
         public static void RegisterRoutes(RouteCollection routes)
         {
-            routes.IgnoreRoute("css/{*path}");
-            routes.IgnoreRoute("js/{*path}");
-            routes.IgnoreRoute("img/{*path}");
+            routes.IgnoreRoute("Content/{*path}");
+            routes.IgnoreRoute("Scripts/{*path}");
             routes.IgnoreRoute("bootstrap/{*path}");
             routes.IgnoreRoute("{*favicon}", new { favicon = @"(.*/)?favicon.ico(/.*)?" });
             routes.IgnoreRoute("{*allaxd}", new { allaxd = @".*\.axd(/.*)?" });

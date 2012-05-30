@@ -176,6 +176,7 @@
     <Compile Include="Controllers\PCOAuthController.cs" />
     <Compile Include="Controllers\F1PeopleController.cs" />
     <Compile Include="Controllers\F1SearchController.cs" />
+    <Compile Include="Controllers\PCOSearchController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -208,21 +209,19 @@
     <Content Include="Error.html" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
-    <Content Include="Content\Site.css" />
     <Content Include="humans.txt" />
-    <Content Include="js\libs\dd_belatedpng.js" />
-    <Content Include="js\libs\jquery-1.7.1-vsdoc.js" />
-    <Content Include="js\libs\jquery-1.7.1.js" />
-    <Content Include="js\libs\jquery-1.7.1.min.js" />
-    <Content Include="js\libs\jquery.validate-vsdoc.js" />
-    <Content Include="js\libs\jquery.validate.js" />
-    <Content Include="js\libs\jquery.validate.min.js" />
-    <Content Include="js\libs\jquery.validate.unobtrusive.js" />
-    <Content Include="js\libs\jquery.validate.unobtrusive.min.js" />
-    <Content Include="js\libs\modernizr-2.0.6-development-only.js" />
-    <Content Include="js\plugins.js" />
-    <Content Include="js\script.js" />
     <Content Include="robots.txt" />
+    <Content Include="Scripts\jquery-1.7.2.intellisense.js" />
+    <Content Include="Scripts\jquery-1.7.2.js" />
+    <Content Include="Scripts\jquery-1.7.2.min.js" />
+    <Content Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.validate.js" />
+    <Content Include="Scripts\jquery.validate.min.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\knockout-2.1.0.debug.js" />
+    <Content Include="Scripts\knockout-2.1.0.js" />
+    <Content Include="Scripts\modernizr-2.5.3.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -239,7 +238,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="cachedassets\" />
-    <Folder Include="js\mylibs\" />
+    <Folder Include="Content\" />
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
@@ -306,6 +305,7 @@
     <Content Include="Views\Home\Ready.cshtml" />
     <Content Include="Views\F1People\SearchByName.cshtml" />
     <Content Include="Views\PCOPeople\SearchByName.cshtml" />
+    <Content Include="Views\Home\Search.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
