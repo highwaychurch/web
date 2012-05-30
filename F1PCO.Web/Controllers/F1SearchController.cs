@@ -16,7 +16,8 @@ namespace F1PCO.Web.Controllers
 
         public async Task<IEnumerable<F1Person>> GetPeople(string searchTerm)
         {
-            return await _f1PersonRepository.SearchByNameAsync(searchTerm);
+            var f1Persons = await _f1PersonRepository.SearchByNameAsync(searchTerm);
+            return f1Persons;
         }
     }
 }

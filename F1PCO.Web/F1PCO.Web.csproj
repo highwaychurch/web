@@ -181,6 +181,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Content Include="Scripts\Search.js" />
     <Compile Include="ViewModels\F1People\SearchByNameViewModel.cs" />
     <Compile Include="ViewModels\PCOPeople\SearchByNameViewModel.cs" />
   </ItemGroup>
