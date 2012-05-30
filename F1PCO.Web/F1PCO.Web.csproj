@@ -170,7 +170,6 @@
   <ItemGroup>
     <Compile Include="App\Modules\F1Module.cs" />
     <Compile Include="App\Modules\PCOModule.cs" />
-    <Compile Include="App\Modules\PersistenceModule.cs" />
     <Compile Include="Controllers\PCOPeopleController.cs" />
     <Compile Include="Controllers\F1AuthController.cs" />
     <Compile Include="Controllers\HomeController.cs" />

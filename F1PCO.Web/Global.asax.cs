@@ -16,6 +16,7 @@ using F1PCO.Web.App.Modules;
 using Highway.Shared.Autofac;
 using Highway.Shared.Diagnostics;
 using Highway.Shared.Mvc;
+using Highway.Shared.Mvc.Persistence;
 using Highway.Shared.Mvc.Validation;
 using Module = Autofac.Module;
 
@@ -112,7 +113,7 @@ namespace F1PCO.Web
                               {
                                   new MvcModule(),
                                   new WebApiModule(),
-                                  new PersistenceModule(),
+                                  new RavenPersistenceModule(),
                                   new SecurityModule(),
                                   new DiagnosticsModule(),
                                   new TimeModule(),
