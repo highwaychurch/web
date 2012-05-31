@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -39,12 +40,37 @@ namespace F1PCO.Integration.PCO
 
         private static PCOPerson GetPCOPersonFromXml(XElement xPerson)
         {
+            var lastUpdatedAtUtc = DateTime.Parse((string) xPerson.Element("updated-at")).ToUniversalTime();
             return new PCOPerson
                        {
-                           PCOID = (string)xPerson.Element("id"),
-                           FirstName = (string)xPerson.Element("first-name"),
-                           LastName = (string)xPerson.Element("last-name"),
+                           PCOID = (string) xPerson.Element("id"),
+                           LastUpdatedAtUtc = lastUpdatedAtUtc,
+                           FirstName = (string) xPerson.Element("first-name"),
+                           LastName = (string) xPerson.Element("last-name"),
+                           Email = TryGetEmailAddress(xPerson, "Home"),
+                           MobilePhone = TryGetPhoneNumber(xPerson, "Mobile"),
+                           HomePhone = TryGetPhoneNumber(xPerson, "Home")
                        };
+        }
+
+        private static string TryGetPhoneNumber(XElement xPerson, string location)
+        {
+            return
+                xPerson.Element("contact-data")
+                    .Element("phone-numbers").Elements("phone-number")
+                    .Where(x => (string)x.Element("location") == location)
+                    .Select(x => (string)x.Element("number"))
+                    .FirstOrDefault();
+        }
+
+        private static string TryGetEmailAddress(XElement xPerson, string location)
+        {
+            return
+                xPerson.Element("contact-data")
+                    .Element("email-addresses").Elements("email-address")
+                    .Where(x => (string) x.Element("location") == location)
+                    .Select(x => (string) x.Element("address"))
+                    .FirstOrDefault();
         }
     }
 }

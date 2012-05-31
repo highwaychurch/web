@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using F1PCO.Integration.PCO;
 
 namespace F1PCO.Web.ViewModels.PCOPeople
 {
