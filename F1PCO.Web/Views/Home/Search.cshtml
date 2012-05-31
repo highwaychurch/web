@@ -7,14 +7,20 @@
         .Render("~/cachedassets/search_#.js")))
 }
 <form class="well form-search" data-bind="submit: startSearch">
-    <input type="text" class="input-medium search-query" data-bind="value: searchTerm" placeholder="The person's first or last name..." />
-    <button id="searchButton" type="submit" class="btn" data-bind="text: isSearchInProgress() == true ? 'Searching...' : 'Search', disable: isSearchInProgress()">Search</button>
+    <input type="text" class="input-medium search-query" data-bind="value: searchTerm, valueUpdate: 'afterkeydown'" placeholder="The person's first or last name..." />
+    <button id="searchButton" type="submit" class="btn" data-bind="text: isSearchInProgress() == true ? 'Searching...' : 'Search', enable: isSearchAllowed">Search</button>
 </form>
 
-<div class="row">
+<div class="row" style="display: none" data-bind="visible: hasSearched()">
     <div class="span6">
         <h3>Fellowship One</h3>
-        <table class="table table-striped table-bordered">
+        <div class="progress progress-striped active" data-bind="visible: isSearchInProgress() == true">
+            <div class="bar" style="width: 100%;"></div>
+        </div>
+        <div class="alert" data-bind="visible: f1People().length == 0 && isF1SearchInProgress() == false">
+            <strong>No results</strong> No results matched <b data-bind="text: searchTerm"></b>
+        </div>
+        <table class="table table-striped table-bordered" data-bind="visible: f1People().length > 0">
             <thead>
                 <tr>
                     <th>F1ID</th>
@@ -28,7 +34,13 @@
     </div>
     <div class="span6">
         <h3>Planning Center Online</h3>
-        <table class="table table-striped table-bordered">
+        <div class="progress progress-striped active" data-bind="visible: isPCOSearchInProgress() == true">
+            <div class="bar" style="width: 100%;"></div>
+        </div>
+        <div class="alert" data-bind="visible: f1People().length == 0 && isSearchInProgress() == false">
+            <strong>No results</strong> No results matched <b data-bind="text: searchTerm"></b>
+        </div>
+        <table class="table table-striped table-bordered" data-bind="visible: pcoPeople().length > 0">
             <thead>
                 <tr>
                     <th>PCOID</th>

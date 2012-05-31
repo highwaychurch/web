@@ -19,6 +19,7 @@ function SearchViewModel() {
     var self = this;
 
     self.searchTerm = ko.observable();
+    self.hasSearched = ko.observable(false);
     self.f1People = ko.observableArray();
     self.isF1SearchInProgress = ko.observable(false);
     self.pcoPeople = ko.observableArray();
@@ -28,9 +29,14 @@ function SearchViewModel() {
         return self.isF1SearchInProgress() || self.isPCOSearchInProgress();
     });
     
+    self.isSearchAllowed = ko.computed(function() {
+        return self.isF1SearchInProgress() == false && self.searchTerm() != null && self.searchTerm().length >= 2;
+    })
+    
     self.startSearch = function () {
-        // Don't allow double searching
-        if (self.isSearchInProgress() == true) return;
+        if (self.isSearchAllowed() == false) return;
+
+        self.hasSearched(true);
         
         // Clear the current results
         self.f1People.removeAll();
