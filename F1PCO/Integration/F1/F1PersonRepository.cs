@@ -72,57 +72,5 @@ namespace F1PCO.Integration.F1
                     .Select(x => (string)x.Element("communicationValue"))
                     .FirstOrDefault();
         }
-
-        //private static IEnumerable<F1Person> GetF1PeopleFromJson(string json)
-        //{
-        //    dynamic people = JObject.Parse(json);
-        //    if (people.results == null || people.results.person == null) yield break;
-
-        //    foreach (dynamic p in people.results.person)
-        //    {
-        //        yield return GetF1PersonFromJObject(p);
-        //    }
-        //}
-
-        //private static F1Person GetF1PersonFromJObject(dynamic p)
-        //{
-        //    var lastUpdatedAtUtc = ((DateTime) (p.lastUpdatedDate ?? p.createdDate)).ToUniversalTime();
-        //    return new F1Person
-        //               {
-        //                   F1ID = p["@id"],
-        //                   LastUpdatedAtUtc = lastUpdatedAtUtc,
-        //                   FirstName = p.firstName,
-        //                   LastName = p.lastName,
-        //                   Email = TryGetEmail(p),
-        //                   MobilePhone = TryGetPhoneNumber(p, "Mobile"),
-        //                   HomePhone = TryGetPhoneNumber(p, "Home Phone"),
-        //               };
-        //}
-
-        //private static string TryGetPhoneNumber(dynamic p, string type)
-        //{
-        //    foreach (dynamic c in p.communications.communication)
-        //    {
-        //        if (c.communicationType.name == type)
-        //        {
-        //            return c.communicationValue;
-        //        }
-        //    }
-
-        //    return null;
-        //}
-
-        //private static string TryGetEmail(dynamic p)
-        //{
-        //    foreach (dynamic c in p.communications.communication)
-        //    {
-        //        if (c.communicationType.name == "Email")
-        //        {
-        //            return c.communicationValue;
-        //        }
-        //    }
-
-        //    return null;
-        //}
     }
 }
