@@ -299,7 +299,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>2265</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:9503</IISUrl>
+          <IISUrl>http://localhost:9903</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

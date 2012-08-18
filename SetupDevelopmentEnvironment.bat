@@ -14,7 +14,7 @@ ECHO Installing SSL and Signing Certficate
 ECHO ################################
 certutil -f -p highwaychristianchurch -importPFX ".\Certificates\devlocal.highway.com.au Wildcard Certificate.pfx"
 IF %ERRORLEVEL% NEQ 0 GOTO ERROR
-powershell -command .\DeploymentScripts\Utils\GrantAccessToPrivateKey.ps1 b5566e7c9b7d1963d643d5b6bc980f9122215c8a %username%
+powershell.exe -ExecutionPolicy Bypass -InputFormat none -Command .\DeploymentScripts\Utils\GrantAccessToPrivateKey.ps1 b5566e7c9b7d1963d643d5b6bc980f9122215c8a %username%
 IF %ERRORLEVEL% NEQ 0 GOTO ERROR
 
 ECHO
@@ -27,7 +27,7 @@ ECHO ################################
 IF %ERRORLEVEL% NEQ 0 GOTO ERROR
 %appcmd% add app /site.name:Highway.Web /path:"/" /physicalPath:"%~dp0Highway.Web"
 IF %ERRORLEVEL% NEQ 0 GOTO ERROR
-%appcmd% set site /site.name:Highway.Web /+bindings.[protocol='http',bindingInformation='*:9500:localhost']
+%appcmd% set site /site.name:Highway.Web /+bindings.[protocol='http',bindingInformation='*:9900:localhost']
 IF %ERRORLEVEL% NEQ 0 GOTO ERROR
 %appcmd% set site /site.name:Highway.Web /+bindings.[protocol='http',bindingInformation='*:80:www.%domain%']
 IF %ERRORLEVEL% NEQ 0 GOTO ERROR
@@ -39,7 +39,7 @@ IF %ERRORLEVEL% NEQ 0 GOTO ERROR
 IF %ERRORLEVEL% NEQ 0 GOTO ERROR
 %appcmd% add app /site.name:Raven.Web /path:"/" /physicalPath:"%~dp0Raven.Web"
 IF %ERRORLEVEL% NEQ 0 GOTO ERROR
-%appcmd% set site /site.name:Raven.Web /+bindings.[protocol='http',bindingInformation='*:9501:localhost']
+%appcmd% set site /site.name:Raven.Web /+bindings.[protocol='http',bindingInformation='*:9901:localhost']
 IF %ERRORLEVEL% NEQ 0 GOTO ERROR
 %appcmd% set site /site.name:Raven.Web /+bindings.[protocol='http',bindingInformation='*:80:ravendb.%domain%']
 IF %ERRORLEVEL% NEQ 0 GOTO ERROR
@@ -51,7 +51,7 @@ IF %ERRORLEVEL% NEQ 0 GOTO ERROR
 IF %ERRORLEVEL% NEQ 0 GOTO ERROR
 %appcmd% add app /site.name:Identity.Web /path:"/" /physicalPath:"%~dp0Identity.Web"
 IF %ERRORLEVEL% NEQ 0 GOTO ERROR
-%appcmd% set site /site.name:Identity.Web /+bindings.[protocol='http',bindingInformation='*:9502:localhost']
+%appcmd% set site /site.name:Identity.Web /+bindings.[protocol='http',bindingInformation='*:9902:localhost']
 IF %ERRORLEVEL% NEQ 0 GOTO ERROR
 %appcmd% set site /site.name:Identity.Web /+bindings.[protocol='http',bindingInformation='*:80:id.%domain%']
 IF %ERRORLEVEL% NEQ 0 GOTO ERROR
@@ -63,7 +63,7 @@ IF %ERRORLEVEL% NEQ 0 GOTO ERROR
 IF %ERRORLEVEL% NEQ 0 GOTO ERROR
 %appcmd% add app /site.name:Creative.Web /path:"/" /physicalPath:"%~dp0Creative.Web"
 IF %ERRORLEVEL% NEQ 0 GOTO ERROR
-%appcmd% set site /site.name:Creative.Web /+bindings.[protocol='http',bindingInformation='*:9503:localhost']
+%appcmd% set site /site.name:Creative.Web /+bindings.[protocol='http',bindingInformation='*:9903:localhost']
 IF %ERRORLEVEL% NEQ 0 GOTO ERROR
 %appcmd% set site /site.name:Creative.Web /+bindings.[protocol='http',bindingInformation='*:80:creative.%domain%']
 IF %ERRORLEVEL% NEQ 0 GOTO ERROR
@@ -75,7 +75,7 @@ IF %ERRORLEVEL% NEQ 0 GOTO ERROR
 IF %ERRORLEVEL% NEQ 0 GOTO ERROR
 %appcmd% add app /site.name:F1PCO.Web /path:"/" /physicalPath:"%~dp0F1PCO.Web"
 IF %ERRORLEVEL% NEQ 0 GOTO ERROR
-%appcmd% set site /site.name:F1PCO.Web /+bindings.[protocol='http',bindingInformation='*:9506:localhost']
+%appcmd% set site /site.name:F1PCO.Web /+bindings.[protocol='http',bindingInformation='*:9906:localhost']
 IF %ERRORLEVEL% NEQ 0 GOTO ERROR
 %appcmd% set site /site.name:F1PCO.Web /+bindings.[protocol='http',bindingInformation='*:80:f1pco.%domain%']
 IF %ERRORLEVEL% NEQ 0 GOTO ERROR
